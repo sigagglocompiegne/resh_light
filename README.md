@@ -11,7 +11,7 @@ La gestion de ces compétences est externalisée auprès de différents exploita
 
 Les conditions de connaissances de l'exploitation dependent donc de plusieurs exploitants qui produisent des données dans leurs systèmes d'information puis les diffusent à la collectivité sous cette forme. Cette situation conduit à des données hétèrogènes en terme de structure informatique et ne permet pas de disposer d'une vision unifiée des réseaux dont la collectivité est compétente.
 
-Un standard informatique RAEPA de la COVADIS tente d'amener un premier niveau de standardisation mais apparait après analyse comme insuffisant pour rendre compte d'une qualité descriptive satisfaisante du patrimoine. Une démarche nationale de l'ASTEE que l'agglomération à rejoint, vise à réviser ce standard sur un niveau de contenu plus adéquat afin de faciliter les conditions techniques d'échanges de données "riches" entre les différents opérateurs des réseaux humides.
+Un standard informatique RAEPA de la COVADIS tente d'amener un premier niveau de standardisation mais apparait après analyse comme insuffisant pour rendre compte d'une qualité descriptive satisfaisante du patrimoine. Une démarche nationale de l'ASTEE à laquelle l'agglomération s'est jointe, vise à réviser ce standard sur un niveau de contenu plus adéquat afin de faciliter les conditions techniques d'échanges de données "riches" entre les différents opérateurs des réseaux humides.
 
 Dans l'attente, l'ARC a mené des travaux visant à concevoir un modèle de données simplifié au regard du standard RAEPA actuel et des données sources diffusées par les concesionnaires privés titulaires de contrats sur le territoire de l'agglomération.
 
