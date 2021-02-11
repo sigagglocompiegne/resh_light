@@ -1,43 +1,39 @@
 /*
-Réseau d'eau pluviale
-Creation du squelette de la structure (table, séquence, trigger,...) du bloc de données "métadonnée de production"
-init_bd_resh_assep_0_metaprod.sql
+Base de données "simplifiée" des réseaux eau et assainissement issues des données concessionnaires
+Creation du squelette de la structure (table, séquence, ...)
+init_bd_resh_reseau.sql
 PostGIS
 
 GeoCompiegnois - http://geo.compiegnois.fr/
 Auteur : Florent Vanhoutte
 */
 
-
-
-
--- ####################################################################################################################################################
--- ###                                                                                                                                              ###
--- ###                                                                        DROP                                                                  ###
--- ###                                                                                                                                              ###
--- ####################################################################################################################################################
-
--- schema
-DROP SCHEMA IF EXISTS m_resh_assep CASCADE;
-
+-- 2021/02/21 : FV / initialisation du code avec comme point de départ le format RAEPA 1.1
 
 
 -- ####################################################################################################################################################
 -- ###                                                                                                                                              ###
--- ###                                                                       SCHEMA                                                                 ###
+-- ###                                                                      SUPPRESSION                                                             ###
 -- ###                                                                                                                                              ###
 -- ####################################################################################################################################################
 
--- Schema: m_resh_assep
-
--- DROP SCHEMA m_resh_assep;
-
-CREATE SCHEMA m_resh_assep;
-
-COMMENT ON SCHEMA m_resh_assep
-  IS 'Réseaux d''eau pluviale';
-
-
+-- vue
+DROP MATERIALIZED VIEW IF EXISTS m_reseau_humide.geo_vm_resh_canae;
+DROP MATERIALIZED VIEW IF EXISTS m_reseau_humide.geo_vm_resh_canass;
+DROP MATERIALIZED VIEW IF EXISTS m_reseau_humide.geo_vm_resh_ouvae;
+DROP MATERIALIZED VIEW IF EXISTS m_reseau_humide.geo_vm_resh_ouvass;
+-- fkey
+ALTER TABLE IF EXISTS m_reseau_humide.geo_resh_can DROP CONSTRAINT geo_resh_can_idresh_fkey;
+ALTER TABLE IF EXISTS m_reseau_humide.geo_resh_ouv DROP CONSTRAINT geo_resh_ouv_idresh_fkey;
+ALTER TABLE IF EXISTS m_reseau_humide.an_resh_objet DROP CONSTRAINT lt_natresh_fkey;
+-- classe
+DROP TABLE IF EXISTS m_reseau_humide.geo_resh_ouv;
+DROP TABLE IF EXISTS m_reseau_humide.geo_resh_can;
+DROP TABLE IF EXISTS m_reseau_humide.an_resh_objet;
+-- domaine de valeur
+DROP TABLE IF EXISTS m_reseau_humide.lt_natresh;
+-- sequence
+DROP SEQUENCE IF EXISTS m_reseau_humide.idresh_seq;
 
 -- ####################################################################################################################################################
 -- ###                                                                                                                                              ###
@@ -46,120 +42,37 @@ COMMENT ON SCHEMA m_resh_assep
 -- ####################################################################################################################################################
 
 
--- **************  Classe de precision  **************
-
--- ### domaine de valeur hérité du standard StaR-DT
-
--- Table: m_resh_assep.lt_assep_clprec
-
--- DROP TABLE m_resh_assep.lt_assep_clprec;
-
-CREATE TABLE m_resh_assep.lt_assep_clprec
-(
-  code character varying(1) NOT NULL,
-  valeur character varying(80) NOT NULL,
-  definition character varying(255),
-  CONSTRAINT lt_clprec_pkey PRIMARY KEY (code)
-)
-WITH (
-  OIDS=FALSE
-);
-
-COMMENT ON TABLE m_resh_assep.lt_assep_clprec
-  IS 'Classe de précision au sens de l''arrêté interministériel du 15 février 2012 modifié (DT-DICT)';
-COMMENT ON COLUMN m_resh_assep.lt_assep_clprec.code IS 'Code de la liste énumérée relative à la classe de précision au sens de l''arrêté interministériel du 15 février 2012 modifié (DT-DICT)';
-COMMENT ON COLUMN m_resh_assep.lt_assep_clprec.valeur IS 'Valeur de la liste énumérée relative à la classe de précision au sens de l''arrêté interministériel du 15 février 2012 modifié (DT-DICT)';
-COMMENT ON COLUMN m_resh_assep.lt_assep_clprec.definition IS 'Définition de la liste énumérée relative à la classe de précision au sens de l''arrêté interministériel du 15 février 2012 modifié (DT-DICT)';
-
-INSERT INTO m_resh_assep.lt_assep_clprec(
-            code, valeur, definition)
-    VALUES
-('A','Classe A','Classe de précision inférieure 40 cm'),
-('B','Classe B','Classe de précision supérieure à 40 cm et inférieure à 1,50 m'),
-('C','Classe C','Classe de précision supérieure à 1,50 m ou inconnue');
-
-
 -- **************  Nature du réseau  **************
 
--- ### domaine de valeur hérité du standard StaR-DT, préexistant au PCRS mais avec des variantes
+-- Table: m_reseau_humide.lt_natresh
 
--- Table: m_resh_assep.lt_assep_natres
+-- DROP TABLE m_reseau_humide.lt_natresh;
 
--- DROP TABLE m_resh_assep.lt_assep_natres;
-
-CREATE TABLE m_resh_assep.lt_assep_natres
+CREATE TABLE m_reseau_humide.lt_natresh
 (
   code character varying(7) NOT NULL,
   valeur character varying(80) NOT NULL,
   couleur character varying(7) NOT NULL,
-  CONSTRAINT lt_natres_pkey PRIMARY KEY (code)
+  CONSTRAINT lt_natresh_pkey PRIMARY KEY (code)
 )
 WITH (
   OIDS=FALSE
 );
 
-COMMENT ON TABLE m_resh_assep.lt_assep_natres
-  IS 'Type de réseau conformément à la liste des réseaux de la NF P98-332';
-COMMENT ON COLUMN m_resh_assep.lt_assep_natres.code IS 'Code de la liste énumérée relative à la nature du réseau';
-COMMENT ON COLUMN m_resh_assep.lt_assep_natres.valeur IS 'Valeur de la liste énumérée relative à la nature du réseau';
-COMMENT ON COLUMN m_resh_assep.lt_assep_natres.couleur IS 'Code couleur (hexadecimal) des réseaux enterrés selon la norme NF P 98-332';
+COMMENT ON TABLE m_reseau_humide.lt_natresh
+  IS 'Nature du réseau humide conformément à la liste des réseaux de la NF P98-332';
+COMMENT ON COLUMN m_reseau_humide.lt_natresh.code IS 'Code de la liste énumérée relative à la nature du réseau humide';
+COMMENT ON COLUMN m_reseau_humide.lt_natresh.valeur IS 'Valeur de la liste énumérée relative à la nature du réseau humide';
+COMMENT ON COLUMN m_reseau_humide.lt_natresh.couleur IS 'Code couleur (hexadecimal) des réseaux enterrés selon la norme NF P 98-332';
 
-INSERT INTO m_resh_assep.lt_assep_natres(
+INSERT INTO m_reseau_humide.lt_natresh(
             code, valeur, couleur)
     VALUES
-('00','Non défini','#FFFFFF'),
-('ELEC','Electricité','#FF0000'),
-('ELECECL','Eclairage public','#FF0000'),
-('ELECSLT','Signalisation lumineuse tricolore','#FF0000'),
-('ELECTRD','Eléctricité transport/distribution','#FF0000'), -- PCRS décomposé en 2
--- PCRS : ('ELECBT','Eléctricité basse tension','#FF0000'),
--- PCRS : ('ELECHT','Eléctricité haute tension','#FF0000'),
-('GAZ','Gaz','#FFFF00'),
-('CHIM','Produits chimiques','#F99707'),
 ('AEP','Eau potable','#00B0F0'),
-('ASS','Assainissement et pluvial','#663300'), -- PCRS : ('ASSA','Assainissement et pluvial','#663300'),
+('ASS','Assainissement et pluvial','#663300'),
 ('ASSEP','Eaux pluviales','#663300'),
 ('ASSEU','Eaux usées','#663300'),
-('ASSUN','Réseau unitaire','#663300'), -- PCRS : ('ASSRU','Réseau unitaire','#663300'), 
-('CHAU','Chauffage et climatisation','#7030A0'),
-('COM','Télécom','#00FF00'),
-('DECH','Déchets','#663300'),
-('INCE','Incendie','#00B0F0'),
-('PINS','Protection Inondation-Submersion','#663300'), -- n'existe pas PCRS
-('MULT','Multi réseaux','#FF00FF');
-
-
--- **************  Type d'opération  **************
-
--- Table: m_resh_assep.lt_assep_typope
-
--- DROP TABLE m_resh_assep.lt_assep_typope;
-
-CREATE TABLE m_resh_assep.lt_assep_typope
-(
-  code character varying(2) NOT NULL,
-  valeur character varying(80) NOT NULL,
-  definition character varying(255),
-  CONSTRAINT lt_typope_pkey PRIMARY KEY (code)
-)
-WITH (
-  OIDS=FALSE
-);
-
-COMMENT ON TABLE m_resh_assep.lt_assep_typope
-  IS 'Type d''opération de détection des réseaux enterrés';
-COMMENT ON COLUMN m_resh_assep.lt_assep_typope.code IS 'Code de la liste énumérée relative au type d''opération de détection des réseaux enterrés';
-COMMENT ON COLUMN m_resh_assep.lt_assep_typope.valeur IS 'Valeur de la liste énumérée relative au type d''opération de détection des réseaux enterrés';
-COMMENT ON COLUMN m_resh_assep.lt_assep_typope.definition IS 'Définition de la liste énumérée relative au type d''opération de détection des réseaux enterrés';
-
-INSERT INTO m_resh_assep.lt_assep_typope(
-            code, valeur, definition)
-    VALUES
-('00','Non renseigné','Non renseigné'),
-('IC','Investigation complémentaire','Opération menée dans le cadre de travaux par le maitre d''ouvrage'),
-('OL','Opération de localisation','Opération menée dans le cadre de démarches d''amélioration continue par l''exploitant du réseau'),
-('99','Autre','Autre');
-
+('ASSUN','Réseau unitaire','#663300');
 
 
 -- ####################################################################################################################################################
@@ -169,42 +82,17 @@ INSERT INTO m_resh_assep.lt_assep_typope(
 -- ####################################################################################################################################################
 
 
+-- Sequence: m_reseau_humide.idresh_seq
+-- DROP SEQUENCE m_reseau_humide.idresh_seq;
 
--- Sequence: m_resh_assep.idopedetec_seq
-
--- DROP SEQUENCE m_resh_assep.idopedetec_seq;
-
-CREATE SEQUENCE m_resh_assep.idopedetec_seq
+CREATE SEQUENCE m_reseau_humide.idresh_seq
   INCREMENT 1
   MINVALUE 0
   MAXVALUE 9223372036854775807
   START 1
   CACHE 1;
 
--- Sequence: m_resh_assep.idexcdetec_seq
-
--- DROP SEQUENCE m_resh_assep.idexcdetec_seq;
-
-CREATE SEQUENCE m_resh_assep.idexcdetec_seq
-  INCREMENT 1
-  MINVALUE 0
-  MAXVALUE 9223372036854775807
-  START 1
-  CACHE 1;
-
--- Sequence: m_resh_assep.idptleve_seq
-
--- DROP SEQUENCE m_resh_assep.idptleve_seq;
-
-CREATE SEQUENCE m_resh_assep.idptleve_seq
-  INCREMENT 1
-  MINVALUE 0
-  MAXVALUE 9223372036854775807
-  START 1
-  CACHE 1;
-
-
-    
+  
 -- ####################################################################################################################################################
 -- ###                                                                                                                                              ###
 -- ###                                                                  CLASSE OBJET                                                                ###
@@ -213,151 +101,118 @@ CREATE SEQUENCE m_resh_assep.idptleve_seq
 
 
 
--- #################################################################### CLASSE OPERATION DE DETECTION ###############################################
+-- ##############################################################################################################################################
+-- #                                                                      RESEAU                                                                #
+-- ##############################################################################################################################################
 
--- Table: m_resh_assep.geo_assep_operation
 
--- DROP TABLE m_resh_assep.geo_assep_operation;
+-- ################################################################ CLASSE RESEAU ##############################################
 
-CREATE TABLE m_resh_assep.geo_assep_operation
+-- Table: m_reseau_humide.an_resh_objet
+
+-- DROP TABLE m_reseau_humide.an_resh_objet;
+
+CREATE TABLE m_reseau_humide.an_resh_objet
 (
-  idopedetec character varying(254) NOT NULL,
-  refope character varying(80) NOT NULL, -- fkey vers classe opedetec
-  typope character varying(2) NOT NULL, -- fkey vers domaine de valeur lt_typope
-  natres character varying(7) NOT NULL, -- fkey vers domaine de valeur lt_natres
-  mouvrage character varying(80) NOT NULL,
-  presta character varying(80) NOT NULL,
-  datefinope date NOT NULL,
-  datedebope date NOT NULL,  
+  idresh bigint NOT NULL,
+  refprod character varying(254),
+  natresh character varying(5),
+  enservice character varying(1),  
+  sourmaj character varying(100) NOT NULL,  
+  datemaj date NOT NULL,
+  qualgloc character varying(1) NOT NULL DEFAULT 'C', 
+  insee character varying(5),
+  refcontrat character varying(254), 
   observ character varying(254),
-  sup_m2 integer,
   dbinsert timestamp without time zone NOT NULL DEFAULT now(),  
-  dbupdate timestamp without time zone,
-  geom geometry(MultiPolygon,2154) NOT NULL,
-  CONSTRAINT geo_operation_pkey PRIMARY KEY (idopedetec),
-  CONSTRAINT refope_ukey UNIQUE (refope) 
+  dbupdate timestamp without time zone,  
+  CONSTRAINT an_resh_objet_pkey PRIMARY KEY (idresh)  
 )
 WITH (
   OIDS=FALSE
 );
 
-COMMENT ON TABLE m_resh_assep.geo_assep_operation
-  IS 'Opération de détection de réseaux';
-COMMENT ON COLUMN m_resh_assep.geo_assep_operation.idopedetec IS 'Identifiant unique de l''opération de détection dans la base de données';
-COMMENT ON COLUMN m_resh_assep.geo_assep_operation.refope IS 'Référence de l''opération de détection';
-COMMENT ON COLUMN m_resh_assep.geo_assep_operation.typope IS 'Type d''opération de détection';
-COMMENT ON COLUMN m_resh_assep.geo_assep_operation.natres IS 'Nature du réseau faisant l''objet de l''opération de détection';
-COMMENT ON COLUMN m_resh_assep.geo_assep_operation.mouvrage IS 'Maitre d''ouvrage de l''opération de détection';
-COMMENT ON COLUMN m_resh_assep.geo_assep_operation.presta IS 'Prestataire de l''opération de détection';
-COMMENT ON COLUMN m_resh_assep.geo_assep_operation.datefinope IS 'Date de fin de l''opération de détection';
-COMMENT ON COLUMN m_resh_assep.geo_assep_operation.datedebope IS 'Date de début de l''opération de détection';
-COMMENT ON COLUMN m_resh_assep.geo_assep_operation.observ IS 'Commentaires divers';
-COMMENT ON COLUMN m_resh_assep.geo_assep_operation.sup_m2 IS 'Superficie de l''opération de détection (en mètres carrés)';
-COMMENT ON COLUMN m_resh_assep.geo_assep_operation.dbinsert IS 'Horodatage de l''intégration en base de l''objet';
-COMMENT ON COLUMN m_resh_assep.geo_assep_operation.dbupdate IS 'Horodatage de la mise à jour en base de l''objet';
-COMMENT ON COLUMN m_resh_assep.geo_assep_operation.geom IS 'Géométrie de l''objet';
+COMMENT ON TABLE m_reseau_humide.an_resh_objet
+  IS 'Classe abstraite décrivant un objet d''un réseau humide';
+COMMENT ON COLUMN m_reseau_humide.an_resh_objet.idresh IS 'Identifiant unique d''objet';  
+COMMENT ON COLUMN m_reseau_humide.an_resh_objet.refprod IS 'Référence producteur de l''entité';
+COMMENT ON COLUMN m_reseau_humide.an_resh_objet.enservice IS 'Objet en service ou non (abandonné)'; 
+COMMENT ON COLUMN m_reseau_humide.an_resh_objet.natresh IS 'Nature du réseau humide';
+COMMENT ON COLUMN m_reseau_humide.an_resh_objet.sourmaj IS 'Source de la mise à jour';
+COMMENT ON COLUMN m_reseau_humide.an_resh_objet.datemaj IS 'Date de la dernière mise à jour des informations';
+COMMENT ON COLUMN m_reseau_humide.an_resh_objet.qualgloc IS 'Qualité de la géolocalisation (XYZ)';
+COMMENT ON COLUMN m_reseau_humide.an_resh_objet.insee IS 'Code INSEE';
+COMMENT ON COLUMN m_reseau_humide.an_resh_objet.refcontrat IS 'Références du contrat de délégation';
+COMMENT ON COLUMN m_reseau_humide.an_resh_objet.observ IS 'Observations';
+COMMENT ON COLUMN m_reseau_humide.an_resh_objet.dbinsert IS 'Horodatage de l''intégration en base de l''objet';
+COMMENT ON COLUMN m_reseau_humide.an_resh_objet.dbupdate IS 'Horodatage de la mise à jour en base de l''objet';
 
-ALTER TABLE m_resh_assep.geo_assep_operation ALTER COLUMN idopedetec SET DEFAULT nextval('m_resh_assep.idopedetec_seq'::regclass);
+ALTER TABLE m_reseau_humide.an_resh_objet ALTER COLUMN idresh SET DEFAULT nextval('m_reseau_humide.idresh_seq'::regclass);
 
 
--- #################################################################### CLASSE ZONE D'EXCLUSION ###############################################
+-- ################################################################ CLASSE OUV ##############################################
 
--- Table: m_resh_assep.geo_assep_exclusion
+-- Table: m_reseau_humide.geo_resh_ouv
 
--- DROP TABLE m_resh_assep.geo_assep_exclusion;
+-- DROP TABLE m_reseau_humide.geo_resh_ouv;
 
-CREATE TABLE m_resh_assep.geo_assep_exclusion
+CREATE TABLE m_reseau_humide.geo_resh_ouv
 (
-  idexcdetec character varying(254) NOT NULL,
-  refexc character varying(254) NOT NULL,
-  refope character varying(80) NOT NULL, -- fkey vers classe opedetec
-  observ character varying(254),
-  sup_m2 integer,
-  dbinsert timestamp without time zone NOT NULL DEFAULT now(),  
-  dbupdate timestamp without time zone,
-  geom geometry(Polygon,2154) NOT NULL,
-  CONSTRAINT geo_exclusion_pkey PRIMARY KEY (idexcdetec)
-)
-WITH (
-  OIDS=FALSE
-);
-
-COMMENT ON TABLE m_resh_assep.geo_assep_exclusion
-  IS 'Secteur d''exclusion de détection de réseaux';
-COMMENT ON COLUMN m_resh_assep.geo_assep_exclusion.idexcdetec IS 'Identifiant unique du secteur d''exclusion de détection dans la base de données';
-COMMENT ON COLUMN m_resh_assep.geo_assep_exclusion.refexc IS 'Référence du secteur d''exclusion de détection';
-COMMENT ON COLUMN m_resh_assep.geo_assep_exclusion.refope IS 'Référence de l''opération de détection';
-COMMENT ON COLUMN m_resh_assep.geo_assep_exclusion.observ IS 'Commentaires divers';
-COMMENT ON COLUMN m_resh_assep.geo_assep_exclusion.sup_m2 IS 'Superficie du secteur d''exclusion de détection (en mètres carrés)';
-COMMENT ON COLUMN m_resh_assep.geo_assep_exclusion.dbinsert IS 'Horodatage de l''intégration en base de l''objet';
-COMMENT ON COLUMN m_resh_assep.geo_assep_exclusion.dbupdate IS 'Horodatage de la mise à jour en base de l''objet';
-COMMENT ON COLUMN m_resh_assep.geo_assep_exclusion.geom IS 'Géométrie de l''objet';
-
-ALTER TABLE m_resh_assep.geo_assep_exclusion ALTER COLUMN idexcdetec SET DEFAULT nextval('m_resh_assep.idexcdetec_seq'::regclass);
-
-
-
-
--- #################################################################### CLASSE POINT DE LEVE ###############################################
-
--- ## revoir cette classe par rapport à celle du PCRS
-
-
--- Table: m_resh_assep.geo_assep_pointleve
-
--- DROP TABLE m_resh_assep.geo_assep_pointleve;
-
-CREATE TABLE m_resh_assep.geo_assep_pointleve
-(
-  idptleve character varying(254) NOT NULL, -- pkey
-  idptope character varying(254) NOT NULL, -- unique
-  refope character varying(80) NOT NULL, -- fkey vers classe opedetec
-  refptope character varying(30) NOT NULL,
-  insee character varying(5) NOT NULL, 
-  natres character varying(7) NOT NULL, -- fkey vers domaine de valeur lt_natres  
+  idresh bigint NOT NULL,
+  fnouv character varying(80) NOT NULL,  
   x numeric(10,3) NOT NULL,
   y numeric(11,3) NOT NULL,
-  z numeric(7,3) NOT NULL,
-  precxy numeric (7,3) NOT NULL,
-  precz numeric (7,3) NOT NULL,
-  clprecxy character varying (1) NOT NULL DEFAULT 'C',  -- fkey vers domaine de valeur
-  clprecz character varying (1) NOT NULL DEFAULT 'C', -- fkey vers domaine de valeur
-  clprec character varying (1) NOT NULL, -- fkey vers domaine de valeur #resultat combinaison prec xy et z généré par trigger
-  horodatage timestamp without time zone NOT NULL,
-  observ character varying(254),
-  dbinsert timestamp without time zone NOT NULL DEFAULT now(),  
-  dbupdate timestamp without time zone,
+  ztn numeric(7,3) NOT NULL,
+  zrad numeric(7,3) NOT NULL,
   geom geometry(Point,2154) NOT NULL,
-  CONSTRAINT idptleve_pkey PRIMARY KEY (idptleve),
-  CONSTRAINT idptope_ukey UNIQUE (idptope)   
+  CONSTRAINT geo_resh_ouv_pkey PRIMARY KEY (idresh)
 )
 WITH (
   OIDS=FALSE
 );
 
-COMMENT ON TABLE m_resh_assep.geo_assep_pointleve
-  IS 'Point de détection/géoréférencement d''un réseau';
-COMMENT ON COLUMN m_resh_assep.geo_assep_pointleve.idptleve IS 'Identifiant unique du point de détection dans la base de données';
-COMMENT ON COLUMN m_resh_assep.geo_assep_pointleve.idptope IS 'Identifiant unique du point de détection de l''opération';
-COMMENT ON COLUMN m_resh_assep.geo_assep_pointleve.refope IS 'Référence de l''opération de détection';
-COMMENT ON COLUMN m_resh_assep.geo_assep_pointleve.refptope IS 'Matricule/référence du point levé dans l''opération de détection';
-COMMENT ON COLUMN m_resh_assep.geo_assep_pointleve.insee IS 'Code INSEE de la commmune';
-COMMENT ON COLUMN m_resh_assep.geo_assep_pointleve.natres IS 'Nature du réseau levé';
-COMMENT ON COLUMN m_resh_assep.geo_assep_pointleve.x IS 'Coordonnée X Lambert 93 (en mètres)';
-COMMENT ON COLUMN m_resh_assep.geo_assep_pointleve.y IS 'Coordonnée X Lambert 93 (en mètres)';
-COMMENT ON COLUMN m_resh_assep.geo_assep_pointleve.z IS 'Altimétrie Z NGF de la génératrice (supérieure si enterrée, inférieure si aérienne) du réseau (en mètres)';
-COMMENT ON COLUMN m_resh_assep.geo_assep_pointleve.precxy IS 'Précision absolue en planimètre (en mètres)';
-COMMENT ON COLUMN m_resh_assep.geo_assep_pointleve.precz IS 'Précision absolue en altimétrie (en mètres)';
-COMMENT ON COLUMN m_resh_assep.geo_assep_pointleve.clprecxy IS 'Classe de précision planimétrique (XY)';
-COMMENT ON COLUMN m_resh_assep.geo_assep_pointleve.clprecz IS 'Classe de précision altimétrique (Z)';
-COMMENT ON COLUMN m_resh_assep.geo_assep_pointleve.clprec IS 'Classe de précision planimétrique et altimétrique (XYZ)';
-COMMENT ON COLUMN m_resh_assep.geo_assep_pointleve.horodatage IS 'Horodatage détection/géoréfécement du point';
-COMMENT ON COLUMN m_resh_assep.geo_assep_pointleve.observ IS 'Commentaires divers';
-COMMENT ON COLUMN m_resh_assep.geo_assep_pointleve.dbinsert IS 'Horodatage de l''intégration en base de l''objet';
-COMMENT ON COLUMN m_resh_assep.geo_assep_pointleve.dbupdate IS 'Horodatage de la mise à jour en base de l''objet';
-COMMENT ON COLUMN m_resh_assep.geo_assep_pointleve.geom IS 'Géométrie 3D de l''objet';
+COMMENT ON TABLE m_reseau_humide.geo_resh_ouv
+  IS 'Classe décrivant un ouvrage d''un réseau humide';
+COMMENT ON COLUMN m_reseau_humide.geo_resh_ouv.idresh IS 'Identifiant unique d''objet';
+COMMENT ON COLUMN m_reseau_humide.geo_resh_ouv.fnouv IS 'Fonction de l''ouvrage du réseau humide';
+COMMENT ON COLUMN m_reseau_humide.geo_resh_ouv.x IS 'Coordonnée X Lambert 93 (en mètres)';
+COMMENT ON COLUMN m_reseau_humide.geo_resh_ouv.y IS 'Coordonnée Y Lambert 93 (en mètres)';
+COMMENT ON COLUMN m_reseau_humide.geo_resh_ouv.ztn IS 'Altimétrie du terrain naturel (en mètres, Référentiel NGFIGN69)'; 
+COMMENT ON COLUMN m_reseau_humide.geo_resh_ouv.zrad IS 'Altimétrie de la cote radier (en mètres, Référentiel NGFIGN69)';
+COMMENT ON COLUMN m_reseau_humide.geo_resh_ouv.geom IS 'Géométrie ponctuelle de l''objet';
 
-ALTER TABLE m_resh_assep.geo_assep_pointleve ALTER COLUMN idptleve SET DEFAULT nextval('m_resh_assep.idptleve_seq'::regclass);
+
+-- ################################################################ CLASSE CANALISATION ##############################################
+
+-- Table: m_reseau_humide.geo_resh_can
+
+-- DROP TABLE m_reseau_humide.geo_resh_can;
+
+CREATE TABLE m_reseau_humide.geo_resh_can
+(
+  idresh bigint NOT NULL,
+  branchemnt character varying(1),
+  materiau character varying(80),
+  diametre integer,
+  modecirc character varying(80),   
+  longcalc numeric(7,3) NOT NULL,
+  geom geometry(LineString,2154) NOT NULL,
+  CONSTRAINT geo_resh_can_pkey PRIMARY KEY (idresh)  
+)
+WITH (
+  OIDS=FALSE
+);
+
+
+COMMENT ON TABLE m_reseau_humide.geo_resh_can
+  IS 'Classe décrivant une canalisation d''un réseau humide';
+COMMENT ON COLUMN m_reseau_humide.geo_resh_can.idresh IS 'Identifiant unique d''objet';
+COMMENT ON COLUMN m_reseau_humide.geo_resh_can.branchemnt IS 'Canalisation de branchement individuel (O/N)';
+COMMENT ON COLUMN m_reseau_humide.geo_resh_can.materiau IS 'Matériau de la canalisation';
+COMMENT ON COLUMN m_reseau_humide.geo_resh_can.diametre IS 'Diamètre nominal de la canalisation (en millimètres)';
+COMMENT ON COLUMN m_reseau_humide.geo_resh_can.modecirc IS 'Mode de circulation de l''eau à l''intérieur de la canalisation';
+COMMENT ON COLUMN m_reseau_humide.geo_resh_can.longcalc IS 'Longueur calculée de la canalisation en mètre';
+COMMENT ON COLUMN m_reseau_humide.geo_resh_can.geom IS 'Géométrie linéaire de l''objet';
 
 
 
@@ -367,267 +222,307 @@ ALTER TABLE m_resh_assep.geo_assep_pointleve ALTER COLUMN idptleve SET DEFAULT n
 -- ###                                                                                                                                              ###
 -- ####################################################################################################################################################
 
+-- NATURE DU RESEAU
 
--- ID
-
--- exclusion > operation
-ALTER TABLE m_resh_assep.geo_assep_exclusion
-  ADD CONSTRAINT refope_fkey FOREIGN KEY (refope)
-      REFERENCES m_resh_assep.geo_assep_operation (refope) MATCH SIMPLE;
-
---pointleve > operation
-ALTER TABLE m_resh_assep.geo_assep_pointleve
-  ADD CONSTRAINT refope_fkey FOREIGN KEY (refope)
-      REFERENCES m_resh_assep.geo_assep_operation (refope) MATCH SIMPLE;
-
--- DOMAINE DE VALEUR
-
--- ## NATURE DU RESEAU
-
--- operation
-ALTER TABLE m_resh_assep.geo_assep_operation               
-  ADD CONSTRAINT lt_natres_fkey FOREIGN KEY (natres)
-      REFERENCES m_resh_assep.lt_assep_natres (code) MATCH SIMPLE
+ALTER TABLE m_reseau_humide.an_resh_objet               
+  ADD CONSTRAINT lt_natresh_fkey FOREIGN KEY (natresh)
+      REFERENCES m_reseau_humide.lt_natresh (code) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION;
 
--- pointleve
-ALTER TABLE m_resh_assep.geo_assep_pointleve
-  ADD CONSTRAINT lt_natres_fkey FOREIGN KEY (natres)
-      REFERENCES m_resh_assep.lt_assep_natres (code) MATCH SIMPLE
+-- IDRESH
+
+ALTER TABLE m_reseau_humide.geo_resh_can
+  ADD CONSTRAINT geo_resh_can_idresh_fkey FOREIGN KEY (idresh)
+      REFERENCES m_reseau_humide.an_resh_objet (idresh) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION;
 
-      
--- ## TYPE OPE
-
--- operation
-ALTER TABLE m_resh_assep.geo_assep_operation              
-  ADD CONSTRAINT lt_typope_fkey FOREIGN KEY (typope)
-      REFERENCES m_resh_assep.lt_assep_typope (code) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION; 
-
--- ## CLASSE GEOLOC DT-DICT      
-
--- pointleve
-ALTER TABLE m_resh_assep.geo_assep_pointleve
-  ADD CONSTRAINT lt_clprecxy_fkey FOREIGN KEY (clprecxy)
-      REFERENCES m_resh_assep.lt_assep_clprec (code) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,          
-  ADD CONSTRAINT lt_clprecz_fkey FOREIGN KEY (clprecz)
-      REFERENCES m_resh_assep.lt_assep_clprec (code) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,            
-  ADD CONSTRAINT lt_clprec_fkey FOREIGN KEY (clprec)
-      REFERENCES m_resh_assep.lt_assep_clprec (code) MATCH SIMPLE
+ALTER TABLE m_reseau_humide.geo_resh_ouv
+  ADD CONSTRAINT geo_resh_ouv_idresh_fkey FOREIGN KEY (idresh)
+      REFERENCES m_reseau_humide.an_resh_objet (idresh) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION;
 
-      
-      
+
 -- ####################################################################################################################################################
 -- ###                                                                                                                                              ###
 -- ###                                                                        VUES                                                                  ###
 -- ###                                                                                                                                              ###
 -- ####################################################################################################################################################
 
--- Pas de vue pour les classes de métadonnées de production
 
 
+-- #################################################################### VUE CANALISATION AE ###############################################
+        
+-- View: m_reseau_humide.geo_vm_resh_canae
+
+-- DROP MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_canae;
+
+CREATE MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_canae AS 
+ SELECT 
+  a.idresh,
+  a.refprod,
+  a.natresh,
+  a.enservice,
+  g.branchemnt,
+  g.materiau,
+  g.diametre,
+  g.modecirc,   
+  g.longcalc,
+  a.sourmaj,  
+  a.datemaj,
+  a.qualgloc,
+  a.insee,
+  a.refcontrat, 
+  a.observ,
+  a.dbinsert,  
+  a.dbupdate,
+  g.geom
+  
+FROM m_reseau_humide.geo_resh_can g
+LEFT JOIN m_reseau_humide.an_resh_objet a
+ON g.idresh = a.idresh
+WHERE a.natresh = 'AEP'
+ORDER BY a.idresh;
+
+COMMENT ON MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_canae
+  IS 'Canalisation du réseau d''adduction d''eau';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.idresh IS 'Identifiant unique d''objet';  
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.refprod IS 'Référence producteur de l''entité';  
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.natresh IS 'Nature du réseau humide';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.enservice IS 'Objet en service ou non (abandonné)'; 
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.sourmaj IS 'Source de la mise à jour';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.datemaj IS 'Date de la dernière mise à jour des informations';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.qualgloc IS 'Qualité de la géolocalisation (XYZ)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.insee IS 'Code INSEE';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.refcontrat IS 'Références du contrat de délégation';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.observ IS 'Observations';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.dbinsert IS 'Horodatage de l''intégration en base de l''objet';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.dbupdate IS 'Horodatage de la mise à jour en base de l''objet';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.branchemnt IS 'Canalisation de branchement individuel (O/N)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.materiau IS 'Matériau de la canalisation';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.diametre IS 'Diamètre nominal de la canalisation (en millimètres)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.modecirc IS 'Mode de circulation de l''eau à l''intérieur de la canalisation';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.longcalc IS 'Longueur calculée de la canalisation en mètre';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.geom IS 'Géométrie linéaire de l''objet';
+
+
+-- #################################################################### VUE CANALISATION ASS ###############################################
+        
+-- View: m_reseau_humide.geo_vm_resh_canass
+
+-- DROP MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_canass;
+
+CREATE MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_canass AS 
+ SELECT 
+  a.idresh,
+  a.refprod,
+  a.natresh,
+  a.enservice,
+  g.branchemnt,
+  g.materiau,
+  g.diametre,
+  g.modecirc,   
+  g.longcalc,
+  a.sourmaj,  
+  a.datemaj,
+  a.qualgloc,
+  a.insee,
+  a.refcontrat, 
+  a.observ,
+  a.dbinsert,  
+  a.dbupdate,
+  g.geom
+  
+FROM m_reseau_humide.geo_resh_can g
+LEFT JOIN m_reseau_humide.an_resh_objet a
+ON g.idresh = a.idresh
+WHERE a.natresh IN ('ASS', 'ASSEP', 'ASSEU', 'ASSUN')
+ORDER BY a.idresh;
+
+COMMENT ON MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_canass
+  IS 'Canalisation du réseau d''assainissement';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.idresh IS 'Identifiant unique d''objet';  
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.refprod IS 'Référence producteur de l''entité';  
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.natresh IS 'Nature du réseau humide';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.enservice IS 'Objet en service ou non (abandonné)'; 
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.sourmaj IS 'Source de la mise à jour';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.datemaj IS 'Date de la dernière mise à jour des informations';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.qualgloc IS 'Qualité de la géolocalisation (XYZ)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.insee IS 'Code INSEE';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.refcontrat IS 'Références du contrat de délégation';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.observ IS 'Observations';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.dbinsert IS 'Horodatage de l''intégration en base de l''objet';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.dbupdate IS 'Horodatage de la mise à jour en base de l''objet';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.branchemnt IS 'Canalisation de branchement individuel (O/N)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.materiau IS 'Matériau de la canalisation';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.diametre IS 'Diamètre nominal de la canalisation (en millimètres)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.modecirc IS 'Mode de circulation de l''eau à l''intérieur de la canalisation';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.longcalc IS 'Longueur calculée de la canalisation en mètre';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.geom IS 'Géométrie linéaire de l''objet';
+
+
+
+-- #################################################################### VUE OUVRAGE AE ###############################################
+        
+-- View: m_reseau_humide.geo_vm_resh_ouvae
+
+-- DROP MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_ouvae;
+
+CREATE MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_ouvae AS 
+ SELECT 
+  a.idresh,
+  a.refprod,
+  a.natresh,
+  a.enservice,
+  g.fnouv,
+  g.x,
+  g.y,
+  g.ztn,   
+  g.zrad,
+  a.sourmaj,  
+  a.datemaj,
+  a.qualgloc,
+  a.insee,
+  a.refcontrat, 
+  a.observ,
+  a.dbinsert,  
+  a.dbupdate,
+  g.geom
+  
+FROM m_reseau_humide.geo_resh_ouv g
+LEFT JOIN m_reseau_humide.an_resh_objet a
+ON g.idresh = a.idresh
+WHERE a.natresh = 'AEP'
+ORDER BY a.idresh;
+
+COMMENT ON MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_ouvae
+  IS 'Ouvrage du réseau d''adduction d''eau';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.idresh IS 'Identifiant unique d''objet';  
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.refprod IS 'Référence producteur de l''entité';  
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.natresh IS 'Nature du réseau humide';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.enservice IS 'Objet en service ou non (abandonné)'; 
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.sourmaj IS 'Source de la mise à jour';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.datemaj IS 'Date de la dernière mise à jour des informations';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.qualgloc IS 'Qualité de la géolocalisation (XYZ)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.insee IS 'Code INSEE';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.refcontrat IS 'Références du contrat de délégation';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.observ IS 'Observations';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.dbinsert IS 'Horodatage de l''intégration en base de l''objet';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.dbupdate IS 'Horodatage de la mise à jour en base de l''objet';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.fnouv IS 'Fonction de l''ouvrage du réseau humide';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.x IS 'Coordonnée X Lambert 93 (en mètres)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.y IS 'Coordonnée Y Lambert 93 (en mètres)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.ztn IS 'Altimétrie du terrain naturel (en mètres, Référentiel NGFIGN69)'; 
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.zrad IS 'Altimétrie de la cote radier (en mètres, Référentiel NGFIGN69)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.geom IS 'Géométrie ponctuelle de l''objet';
+
+
+-- #################################################################### VUE OUVRAGE ASS ###############################################
+        
+-- View: m_reseau_humide.geo_vm_resh_ouvass
+
+-- DROP MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_ouvass;
+
+CREATE MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_ouvass AS 
+ SELECT 
+  a.idresh,
+  a.refprod,
+  a.natresh,
+  a.enservice,
+  g.fnouv,
+  g.x,
+  g.y,
+  g.ztn,   
+  g.zrad,
+  a.sourmaj,  
+  a.datemaj,
+  a.qualgloc,
+  a.insee,
+  a.refcontrat, 
+  a.observ,
+  a.dbinsert,  
+  a.dbupdate,
+  g.geom
+  
+FROM m_reseau_humide.geo_resh_ouv g
+LEFT JOIN m_reseau_humide.an_resh_objet a
+ON g.idresh = a.idresh
+WHERE a.natresh IN ('ASS', 'ASSEP', 'ASSEU', 'ASSUN')
+ORDER BY a.idresh;
+
+COMMENT ON MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_ouvass
+  IS 'Ouvrage du réseau d''assainissement';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.idresh IS 'Identifiant unique d''objet';  
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.refprod IS 'Référence producteur de l''entité';  
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.natresh IS 'Nature du réseau humide';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.enservice IS 'Objet en service ou non (abandonné)'; 
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.sourmaj IS 'Source de la mise à jour';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.datemaj IS 'Date de la dernière mise à jour des informations';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.qualgloc IS 'Qualité de la géolocalisation (XYZ)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.insee IS 'Code INSEE';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.refcontrat IS 'Références du contrat de délégation';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.observ IS 'Observations';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.dbinsert IS 'Horodatage de l''intégration en base de l''objet';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.dbupdate IS 'Horodatage de la mise à jour en base de l''objet';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.fnouv IS 'Fonction de l''ouvrage du réseau humide';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.x IS 'Coordonnée X Lambert 93 (en mètres)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.y IS 'Coordonnée Y Lambert 93 (en mètres)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.ztn IS 'Altimétrie du terrain naturel (en mètres, Référentiel NGFIGN69)'; 
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.zrad IS 'Altimétrie de la cote radier (en mètres, Référentiel NGFIGN69)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.geom IS 'Géométrie ponctuelle de l''objet';
 
 
 
 -- ####################################################################################################################################################
 -- ###                                                                                                                                              ###
--- ###                                                                      TRIGGER                                                                 ###
+-- ###                                                                        DROITS                                                                ###
 -- ###                                                                                                                                              ###
 -- ####################################################################################################################################################
 
 
--- #################################################################### FONCTION TRIGGER - GEO_POINTLEVE ###################################################
+ALTER TABLE m_reseau_humide.lt_natresh
+  OWNER TO sig_create;
+GRANT ALL ON TABLE m_reseau_humide.lt_natresh TO sig_create;
+GRANT SELECT ON TABLE m_reseau_humide.lt_natresh TO read_sig;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.lt_natresh TO edit_sig;
 
--- Function: m_resh_assep.ft_m_geo_assep_pointleve()
+ALTER TABLE m_reseau_humide.an_resh_objet
+  OWNER TO sig_create;
+GRANT ALL ON TABLE m_reseau_humide.an_resh_objet TO sig_create;
+GRANT SELECT ON TABLE m_reseau_humide.an_resh_objet TO read_sig;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.an_resh_objet TO edit_sig;
 
--- DROP FUNCTION m_resh_assep.ft_m_geo_assep_pointleve();
+ALTER TABLE m_reseau_humide.geo_resh_can
+  OWNER TO sig_create;
+GRANT ALL ON TABLE m_reseau_humide.geo_resh_can TO sig_create;
+GRANT SELECT ON TABLE m_reseau_humide.geo_resh_can TO read_sig;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.geo_resh_can TO edit_sig;
 
-CREATE OR REPLACE FUNCTION m_resh_assep.ft_m_geo_assep_pointleve()
-  RETURNS trigger AS
-$BODY$
+ALTER TABLE m_reseau_humide.geo_resh_ouv
+  OWNER TO sig_create;
+GRANT ALL ON TABLE m_reseau_humide.geo_resh_ouv TO sig_create;
+GRANT SELECT ON TABLE m_reseau_humide.geo_resh_ouv TO read_sig;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.geo_resh_ouv TO edit_sig;
 
---déclaration variable pour stocker la séquence des id
-DECLARE v_idptdetec character varying(254);
+ALTER MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_ouvae
+  OWNER TO sig_create;
+GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_ouvae TO sig_create;
+GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_ouvae TO read_sig;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.geo_vm_resh_ouvae TO edit_sig;
 
-BEGIN
+ALTER MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_ouvass
+  OWNER TO sig_create;
+GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_ouvass TO sig_create;
+GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_ouvass TO read_sig;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.geo_vm_resh_ouvass TO edit_sig;
 
--- INSERT
-IF (TG_OP = 'INSERT') THEN
+ALTER MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_canae
+  OWNER TO sig_create;
+GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_canae TO sig_create;
+GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_canae TO read_sig;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.geo_vm_resh_canae TO edit_sig;
 
-NEW.idptleve=nextval('m_resh_assep.idptleve_seq'::regclass);
-NEW.idptope = CONCAT(NEW.refope,'-',NEW.refptope);
-NEW.insee=(SELECT insee FROM r_osm.geo_vm_osm_commune_arc WHERE st_intersects(NEW.geom,geom));
-NEW.x=st_x(NEW.geom);
-NEW.y=st_y(NEW.geom);
--- simplification ici car si réseau souple la classe A est <0.5 et non 0.4 comme pour une canalisation rigide. De même, règles différentes pour les branchements
--- cas où le point levé ne précise pas la précision, alors par défaut = 0 donc classe C
-NEW.clprecxy=CASE WHEN NEW.precxy > 0 AND NEW.precxy <= 0.4 THEN 'A' WHEN NEW.precxy > 0.4 AND NEW.precxy < 1.5 THEN 'B' ELSE 'C' END;
-NEW.clprecz=CASE WHEN NEW.precxy > 0 AND NEW.precz <= 0.4 THEN 'A' WHEN NEW.precz > 0.4 AND NEW.precz < 1.5 THEN 'B' ELSE 'C' END;
-NEW.clprec=CASE WHEN (NEW.clprecxy = 'A' AND NEW.clprecz = 'A') THEN 'A' WHEN ((NEW.clprecxy IN ('A','B')) AND (NEW.clprecz = 'B')) THEN 'B' WHEN (NEW.clprecxy = 'B' AND NEW.clprecz IN ('A','B')) THEN 'B' ELSE 'C' END;
-NEW.dbinsert=now();
-NEW.dbupdate=NULL;
-NEW.geom=CASE WHEN (SELECT geom FROM m_resh_assep.geo_assep_operation WHERE (st_contains(st_buffer(geom,0.1),NEW.geom)) AND NEW.refope = refope) IS NOT NULL THEN NEW.geom ELSE NULL END;
-
-RETURN NEW;
-
-
--- UPDATE
-ELSIF (TG_OP = 'UPDATE') THEN
-
-NEW.idptleve=OLD.idptleve;
-NEW.idptope = CONCAT(NEW.refope,'-',NEW.refptope);
-NEW.insee=(SELECT insee FROM r_osm.geo_vm_osm_commune_arc WHERE st_intersects(NEW.geom,geom));
-NEW.x=st_x(NEW.geom);
-NEW.y=st_y(NEW.geom);
-NEW.clprecxy=CASE WHEN NEW.precxy > 0 AND NEW.precxy <= 0.4 THEN 'A' WHEN NEW.precxy > 0.4 AND NEW.precxy < 1.5 THEN 'B' ELSE 'C' END;
-NEW.clprecz=CASE WHEN NEW.precxy > 0 AND NEW.precz <= 0.4 THEN 'A' WHEN NEW.precz > 0.4 AND NEW.precz < 1.5 THEN 'B' ELSE 'C' END;
-NEW.clprec=CASE WHEN (NEW.clprecxy = 'A' AND NEW.clprecz = 'A') THEN 'A' WHEN ((NEW.clprecxy IN ('A','B')) AND (NEW.clprecz = 'B')) THEN 'B' WHEN (NEW.clprecxy = 'B' AND NEW.clprecz IN ('A','B')) THEN 'B' ELSE 'C' END;
-NEW.horodatage=OLD.horodatage;
-NEW.dbinsert=OLD.dbinsert;
-NEW.dbupdate=now();
-NEW.geom=CASE WHEN (SELECT geom FROM m_resh_assep.geo_assep_operation WHERE (st_contains(st_buffer(geom,0.1),NEW.geom)) AND NEW.refope = refope) IS NOT NULL THEN NEW.geom ELSE NULL END;
-
-RETURN NEW;
-          
-END IF;
-
-END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-
-COMMENT ON FUNCTION m_resh_assep.ft_m_geo_assep_pointleve() IS 'Fonction trigger pour mise à jour des entités depuis la classe des points de réseau détectés';
-
-
--- Trigger: t_t1_geo_pointleve on m_resh_assep.geo_assep_pointleve
-
--- DROP TRIGGER t_t1_geo_pointleve ON m_resh_assep.geo_assep_pointleve;
-
-CREATE TRIGGER t_t1_geo_pointleve
-  BEFORE INSERT OR UPDATE
-  ON m_resh_assep.geo_assep_pointleve
-  FOR EACH ROW
-  EXECUTE PROCEDURE m_resh_assep.ft_m_geo_assep_pointleve();
-  
-  
-
--- #################################################################### FONCTION TRIGGER - GEO_EXCLUSION ###################################################
-
--- Function: m_resh_assep.ft_m_geo_assep_exclusion()
-
--- DROP FUNCTION m_resh_assep.ft_m_geo_assep_exclusion();
-
-CREATE OR REPLACE FUNCTION m_resh_assep.ft_m_geo_assep_exclusion()
-  RETURNS trigger AS
-$BODY$
-
---déclaration variable pour stocker la séquence des id
-DECLARE v_idexcdetec character varying(254);
-
-BEGIN
-
--- INSERT
-IF (TG_OP = 'INSERT') THEN
-
-NEW.idexcdetec=nextval('m_resh_assep.idexcdetec_seq'::regclass);
-NEW.sup_m2=round(st_area(NEW.geom));
-NEW.dbinsert=now();
-NEW.dbupdate=NULL;
-NEW.geom=CASE WHEN (SELECT geom FROM m_resh_assep.geo_assep_operation WHERE (st_contains(st_buffer(geom,0.1),NEW.geom)) AND NEW.refope = refope) IS NOT NULL THEN NEW.geom ELSE NULL END;
-
-RETURN NEW;
-
-
--- UPDATE
-ELSIF (TG_OP = 'UPDATE') THEN
-
-NEW.idexcdetec=OLD.idexcdetec;
-NEW.sup_m2=round(st_area(NEW.geom));
-NEW.dbinsert=OLD.dbinsert;
-NEW.dbupdate=now();
-NEW.geom=CASE WHEN (SELECT geom FROM m_resh_assep.geo_assep_operation WHERE (st_contains(st_buffer(geom,0.1),NEW.geom)) AND NEW.refope = refope) IS NOT NULL THEN NEW.geom ELSE NULL END;
-
-RETURN NEW;
-          
-END IF;
-
-END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-
-COMMENT ON FUNCTION m_resh_assep.ft_m_geo_assep_exclusion() IS 'Fonction trigger pour mise à jour des entités depuis la classe des secteurs d''exclusion de détection des réseaux';
-
--- Trigger: t_t1_geo_exclusion on m_resh_assep.geo_assep_exclusion
-
--- DROP TRIGGER t_t1_geo_exclusion ON m_resh_assep.geo_assep_exclusion;
-
-CREATE TRIGGER t_t1_geo_exclusion
-  BEFORE INSERT OR UPDATE
-  ON m_resh_assep.geo_assep_exclusion
-  FOR EACH ROW
-  EXECUTE PROCEDURE m_resh_assep.ft_m_geo_assep_exclusion();
-  
-
-  
--- #################################################################### FONCTION TRIGGER - GEO_OPERATION ###################################################
-
--- Function: m_resh_assep.ft_m_geo_assep_operation()
-
--- DROP FUNCTION m_resh_assep.ft_m_geo_assep_operation();
-
-CREATE OR REPLACE FUNCTION m_resh_assep.ft_m_geo_assep_operation()
-  RETURNS trigger AS
-$BODY$
-
---déclaration variable pour stocker la séquence des id
-DECLARE v_idopedetec character varying(254);
-
-BEGIN
-
--- INSERT
-IF (TG_OP = 'INSERT') THEN
-
-NEW.idopedetec=nextval('m_resh_assep.idopedetec_seq'::regclass);
-NEW.datedebope=CASE WHEN NEW.datedebope > NEW.datefinope THEN NULL ELSE NEW.datedebope END;
-NEW.sup_m2=round(st_area(NEW.geom));
-NEW.dbinsert=now();
-NEW.dbupdate=NULL;
-
-RETURN NEW;
-
-
--- UPDATE
-ELSIF (TG_OP = 'UPDATE') THEN
-
-NEW.idopedetec=OLD.idopedetec;
-NEW.datedebope=CASE WHEN NEW.datedebope > NEW.datefinope THEN NULL ELSE NEW.datedebope END;
-NEW.sup_m2=round(st_area(NEW.geom));
-NEW.dbinsert=OLD.dbinsert;
-NEW.dbupdate=now();
-
-RETURN NEW;
-          
-END IF;
-
-END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-
-COMMENT ON FUNCTION m_resh_assep.ft_m_geo_assep_operation() IS 'Fonction trigger pour mise à jour des entités depuis la classe des opérations de détection des réseaux';
-
--- Trigger: t_t1_geo_operation on m_resh_assep.geo_assep_operation
-
--- DROP TRIGGER t_t1_geo_operation ON m_resh_assep.geo_assep_operation;
-
-CREATE TRIGGER t_t1_geo_operation
-  BEFORE INSERT OR UPDATE
-  ON m_resh_assep.geo_assep_operation
-  FOR EACH ROW
-  EXECUTE PROCEDURE m_resh_assep.ft_m_geo_assep_operation();
-    
+ALTER MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_canass
+  OWNER TO sig_create;
+GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_canass TO sig_create;
+GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_canass TO read_sig;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.geo_vm_resh_canass TO edit_sig;
