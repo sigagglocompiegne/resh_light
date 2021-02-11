@@ -23,6 +23,10 @@ Les attendus de connaissance pour ce modèle simplifié concernent donc sommaire
 * l'exploitant et la référence de contrat
 * les métadonnées qualités (date de la source ...)
 
+Les données ont vocation à partir de ce modèle simplifié à être intégrées pour diffusion dans :
+* une application généraliste de connaissance sommaire de l'ensemble des réseaux
+* une application dédiée aux réseaux d'eau et assainissement permettant d'adapter une réprésentation métier et associer d'autres informations du domaine 
+
 ## Ressources
 
 - [Script d'initialisation de la base de données simplifiée réseaux humides](bdd/init_bd_resh_light.sql) 
