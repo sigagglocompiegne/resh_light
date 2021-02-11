@@ -7,13 +7,13 @@
 ## Contexte
 
 L’ARC est compétent sur les différents réseaux humides : potable (production / distribution) ; assainissement (unitaire, eau usée, pluvial urbain).
-La gestion de ces compétences est externalisée auprès de différents exploitants, essentiellement au travers de plusieurs délégations de services publics. Ces dernières peuvent concerner des emprises territoriales variables pour un même type de réseau (certains contrats sont communaux tandis que d'autres regroupent plusieurs communes).
+La gestion de ces compétences est externalisée auprès de différents opérateurs, essentiellement au travers de plusieurs délégations de services publics. Ces dernières peuvent concerner des emprises territoriales variables pour un même type de réseau (certains contrats sont communaux tandis que d'autres regroupent plusieurs communes).
 
-Les conditions de connaissances de l'exploitation dependent donc de plusieurs exploitants qui produisent des données dans leurs systèmes d'information puis les diffusent à la collectivité sous cette forme. Cette situation conduit à des données hétèrogènes en terme de structure informatique et ne permet pas de disposer d'une vision unifiée des réseaux dont la collectivité est compétente.
+Les conditions de connaissances de l'exploitation dependent donc de plusieurs exploitants qui produisent des données dans leurs systèmes d'information puis les diffusent à la collectivité avec des structures spécifiques. Cette situation conduit à des données hétèrogènes en terme de structure informatique et ne permet pas de disposer d'une vision unifiée des réseaux dont la collectivité est compétente.
 
 Un standard informatique RAEPA de la COVADIS tente d'amener un premier niveau de standardisation mais apparait après analyse comme insuffisant pour rendre compte d'une qualité descriptive satisfaisante du patrimoine. Une démarche nationale de l'ASTEE à laquelle l'agglomération s'est jointe, vise à réviser ce standard sur un niveau de contenu plus adéquat afin de faciliter les conditions techniques d'échanges de données "riches" entre les différents opérateurs des réseaux humides.
 
-Dans l'attente, l'ARC a mené des travaux visant à concevoir un modèle de données simplifié au regard du standard RAEPA actuel et des données sources diffusées par les concesionnaires privés titulaires de contrats sur le territoire de l'agglomération.
+Dans l'attente, l'ARC a mené des travaux visant à concevoir un modèle de données simplifié à l'appui du standard RAEPA actuel pour les données sources des concesionnaires privés titulaires de contrats sur le territoire de l'agglomération.
 
 Les attendus de connaissance pour ce modèle simplifié concernent donc sommairement :
 * la position cartographique des ouvrages du réseaux (canalisation, installation)
@@ -23,7 +23,7 @@ Les attendus de connaissance pour ce modèle simplifié concernent donc sommaire
 * l'exploitant et la référence de contrat
 * les métadonnées qualités (date de la source ...)
 
-Les données ont vocation à partir de ce modèle simplifié à être intégrées pour diffusion dans :
+Les données relevant de ce modèle simplifié ont vocation à être intégrées pour diffusion dans :
 * une application généraliste de connaissance sommaire de l'ensemble des réseaux
 * une application dédiée aux réseaux d'eau et assainissement permettant d'adapter une réprésentation métier et associer d'autres informations du domaine 
 
