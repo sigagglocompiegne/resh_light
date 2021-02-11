@@ -2,6 +2,8 @@
 
 # Modèle simplifié des réseaux eau et assainissement
 
+(x) en cours de rédaction
+
 ## Contexte
 
 L’ARC est compétent sur les différents réseaux humides : potable (production / distribution) ; assainissement (unitaire, eau usée, pluvial urbain).
