@@ -7,7 +7,7 @@
 ## Contexte
 
 L’ARC est compétent sur les différents réseaux humides : potable (production / distribution) ; assainissement (unitaire, eau usée, pluvial urbain).
-La gestion de ces compétences est externalisée auprès de différents exploitants essentiellement au travers de plusieurs délégations de services publics. Ces dernières peuvent concerner des emprises territoriales variables pour un même type de réseau (certains contrats sont communaux tandis que d'autres regroupent plusieurs communes).
+La gestion de ces compétences est externalisée auprès de différents exploitants, essentiellement au travers de plusieurs délégations de services publics. Ces dernières peuvent concerner des emprises territoriales variables pour un même type de réseau (certains contrats sont communaux tandis que d'autres regroupent plusieurs communes).
 
 Les conditions de connaissances de l'exploitation dependent donc de plusieurs exploitants qui produisent des données dans leurs systèmes d'information puis les diffusent à la collectivité sous cette forme. Cette situation conduit à des données hétèrogènes en terme de structure informatique et ne permet pas de disposer d'une vision unifiée des réseaux dont la collectivité est compétente.
 
