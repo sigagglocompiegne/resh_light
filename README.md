@@ -2,3 +2,20 @@
 
 # resh_light
 Base de données simplifiée des réseaux eau et assainissement
+
+## Contexte
+
+L’ARC est compétent sur les différents réseaux humides, en eau potable (production / distribution) et en assainissement (unitaire, eau usée, pluvial urbain).
+La gestion de ces compétences sont externalisées essentiellement au travers de plusieurs délégations de services publics auprès de différents exploitants et sur des emprises territoriales variables (certains contrats sont communaux tandis que d'autres regroupent plusieurs communes).
+
+Les conditions de connaissances de l'exploitation dependent donc de plusieurs concessionnaires qui produisent des données dans leurs systèmes d'information puis les diffusent à la collectivité sous cette forme. Cette situation conduit à des données hétèrogènes en terme de structure informatique et ne permet pas de disposer d'une vision unifiée des réseaux dont la collectivité est compétente.
+
+Un standard informatique RAEPA de la COVADIS tente d'amener un premier niveau de standardisation mais qui apparait après analyse comme insuffisant pour rendre compte d'une qualité descriptive satisfaisante du patrimoine. Une démarche nationale de l'ASTEE que l'agglomération à rejoint, vise à réviser ce standard sur un niveau de contenu plus adéquat afin de faciliter les conditions techniques d'échanges de données entre les différents opérateurs des réseaux humides.
+
+Dans l'attente, l'ARC a mené des travaux visant à concevoir un modèle de données simplifié tenant compte du standard RAEPA et des données sources produites sous leurs propres formats, par les concesionnaires privés titulaires de contrats sur le territoire. Les attendus concernent donc sommairement :
+* la position cartographique des ouvrages du réseaux (canalisation, installation)
+* la classe de précision cartographique au sens DT-DICT lorsqu'elle est renseignée (C à défaut)
+* la nature et les cotes terrain naturel / radier de l'installation ponctuelle (avaloir, regard, plaque pleine ...)
+* le diamètre, matériau de la canalisation
+* exploitant et référence de contrat
+* métadonnées qualités (date de la source ...)
