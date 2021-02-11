@@ -22,3 +22,7 @@ Les attendus de connaissance pour ce modèle simplifié concernent donc sommaire
 * le diamètre, matériau de la canalisation
 * l'exploitant et la référence de contrat
 * les métadonnées qualités (date de la source ...)
+
+## Ressources
+
+- [Script d'initialisation de la base de données simplifiée réseaux humides](bdd/init_bd_resh_light.sql) 
