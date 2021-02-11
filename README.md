@@ -26,3 +26,4 @@ Les attendus de connaissance pour ce modèle simplifié concernent donc sommaire
 ## Ressources
 
 - [Script d'initialisation de la base de données simplifiée réseaux humides](bdd/init_bd_resh_light.sql) 
+- [Documentation d'administration de la base_données simplifiée réseaux humides](bdd/doc_admin_bd_resh_light.md) 
