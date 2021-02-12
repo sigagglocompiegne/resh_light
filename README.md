@@ -6,14 +6,14 @@
 
 ## Contexte
 
-L’ARC est compétent sur les différents réseaux humides : potable (production / distribution) ; assainissement (unitaire, eau usée, pluvial urbain).
-La gestion de ces compétences est externalisée auprès de différents opérateurs, essentiellement au travers de plusieurs délégations de services publics. Ces dernières peuvent concerner des emprises territoriales variables pour un même type de réseau (certains contrats sont communaux tandis que d'autres regroupent plusieurs communes).
+L’ARC est compétent sur les différents réseaux humides, à savoir  l'eau potable (production / distribution) et l'assainissement (unitaire, eau usée, pluvial urbain).
+L'exploitation de ces compétences est externalisée auprès de différents opérateurs, essentiellement au travers de plusieurs délégations de services publics. Ces dernières peuvent concerner des emprises territoriales variables pour un même type de réseau (certains contrats sont communaux tandis que d'autres regroupent plusieurs communes).
 
-Les conditions de connaissance dépendent donc de plusieurs exploitants qui produisent des données dans leurs systèmes d'information puis les diffusent à la collectivité sous forme de fichiers structurés spécifiques. Cette situation conduit à des données hétèrogènes en terme de structure informatique et ne permet pas de disposer d'une vision unifiée des réseaux dont la collectivité est compétente.
+La connaissance dépend donc de plusieurs exploitants qui produisent des données au travers de leurs systèmes d'information puis les diffusent à la collectivité sous forme de fichiers structurés spécifiques. Cette situation conduit à des données hétèrogènes du point de vue informatique et ne permet pas de disposer d'une vision unifiée des réseaux dont la collectivité est compétente.
 
-Un standard informatique RAEPA de la COVADIS tente d'amener un premier niveau de standardisation mais apparait après analyse comme insuffisant pour rendre compte d'une qualité descriptive satisfaisante du patrimoine. Une démarche nationale de l'ASTEE à laquelle l'agglomération s'est jointe, vise à réviser ce standard sur un niveau de contenu plus adéquat afin de faciliter les conditions techniques d'échanges de données "riches" entre les différents opérateurs des réseaux humides.
+Un standard informatique RAEPA de la COVADIS tente d'amener un premier niveau de standardisation mais apparait après analyse, comme insuffisant pour rendre compte d'une qualité descriptive satisfaisante du patrimoine. Une démarche nationale de l'ASTEE à laquelle l'agglomération participe, vise à réviser ce standard sur un niveau de contenu plus adéquat sur les conditions techniques d'échanges de données "riches" entre les différents intervenants.
 
-Dans l'attente, l'ARC a mené des travaux visant à concevoir un modèle de données simplifié à l'appui du standard RAEPA actuel pour les données sources des concesionnaires privés titulaires de contrats sur le territoire de l'agglomération.
+Dans l'attente et afin de substituer un patchwork de données provenant pour l'essentiel de plans DAO datés, l'ARC a mené des travaux visant à concevoir un modèle de données simplifié. Celui-ci, prend appui sur les données sources des concessionnaires titulaires de contrats sur le territoire de l'agglomération et la connaissance du standard RAEPA actuel.
 
 Les attendus de connaissance pour ce modèle simplifié concernent donc sommairement :
 * la position cartographique des ouvrages du réseaux (canalisation, installation)
