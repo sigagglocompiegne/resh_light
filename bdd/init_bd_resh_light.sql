@@ -1,10 +1,9 @@
 /*
 Base de données "simplifiée" des réseaux eau et assainissement issues des données concessionnaires
 Creation du squelette de la structure (table, séquence, ...)
-init_bd_resh_reseau.sql
-PostGIS
+init_bd_resh_light.sql
 
-GeoCompiegnois - http://geo.compiegnois.fr/
+GeoCompiegnois - https://geo.compiegnois.fr/
 Auteur : Florent Vanhoutte
 */
 
