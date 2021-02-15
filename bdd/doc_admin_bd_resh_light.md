@@ -22,7 +22,7 @@ L'ensemble des classes d'objets de gestion sont stockées dans le schéma m_rese
 
  ### classes d'objets de gestion :
   
-   `an_resh_objet` : Classe abstraite décrivant un objet d''un réseau humide.
+   `an_resh_objet` : Classe abstraite décrivant un objet d''un réseau humide
    
 |Nom attribut | Définition | Type | Valeurs par défaut |
 |:---|:---|:---|:---|
@@ -42,3 +42,15 @@ L'ensemble des classes d'objets de gestion sont stockées dans le schéma m_rese
 Particularité(s) à noter :
 * Une clé primaire existe sur le champ idresh
 ---
+
+   `geo_resh_can` : Classe décrivant une canalisation d'un réseau humide
+
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
+|idresh|Identifiant unique d'objet|bigint| |
+|branchemnt|Canalisation de branchement individuel (O/N)|character varying(1)| |
+|materiau|Matériau de la canalisation|character varying(80)| |
+|diametre|Diamètre nominal de la canalisation (en millimètres)|integer| |
+|modecirc|Mode de circulation de l'eau à l'intérieur de la canalisation|character varying(80)| |
+|longcalc|Longueur calculée de la canalisation en mètre|numeric(7,3)| |
+|geom|Géométrie linéaire de l'objet|geometry(LineString,2154)| |
