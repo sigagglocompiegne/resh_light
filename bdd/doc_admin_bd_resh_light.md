@@ -54,3 +54,18 @@ Particularité(s) à noter :
 |modecirc|Mode de circulation de l'eau à l'intérieur de la canalisation|character varying(80)| |
 |longcalc|Longueur calculée de la canalisation en mètre|numeric(7,3)| |
 |geom|Géométrie linéaire de l'objet|geometry(LineString,2154)| |
+
+---
+
+   `geo_resh_ouv` : Classe décrivant un ouvrage d'un réseau humide
+
+|Nom attribut | Définition | Type | Valeurs par défaut |
+|:---|:---|:---|:---|
+|idresh|Identifiant unique d'objet|bigint| |
+|fnouv|Fonction de l'ouvrage du réseau humide|character varying(80)| |
+|x|Coordonnée X Lambert 93 (en mètres)|numeric(10,3)| |
+|y|Coordonnée Y Lambert 93 (en mètres)|numeric(11,3)| |
+|ztn|Altimétrie du terrain naturel (en mètres, Référentiel NGFIGN69)|numeric(7,3)| |
+|zrad|Altimétrie de la cote radier (en mètres, Référentiel NGFIGN69)|numeric(7,3)| |
+|geom|Géométrie ponctuelle de l'objet|geometry(Point,2154)| |
+
