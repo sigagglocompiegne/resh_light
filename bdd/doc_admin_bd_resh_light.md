@@ -8,7 +8,7 @@ La base simplifiée des réseaux eau et assainissement est une base ayant pour o
 La base est alimentée **exclusivement** à partir des données transmises sous forme de fichiers structurés par les exploitants et selon leurs propres formats.
 En raison de la forte hétérogéneité des sources (classes, attributs, domaines de valeurs), la base simplifiée de la collectivité s'appuie pour l'essentiel sur les libéllés exploitants sans recherche de structuration de domaines de valeur, les usages sommaires à l'aval étant compatibles à ce stade.
 
-Sur la modélisation, la base comprend 3 classes relationnelles, 1 superclasse objet de réseau, 2 classes géométriques enfants, l'une pour les canalisations (linéaire), l'autre pour les ouvrages (ponctuel). En complément, 1 seul domaine de valeur structuré est organisé pour typer la nature du réseau humide en s'appuyant sur la liste de codes du standard STAR-DT. Sur cette base de liste, 4 vues matérialisées d'exploitation reconstituent les données pour les réseaux d'eau et assainissement (canalisation et ouvrage).
+Sur la modélisation, la base comprend 3 classes relationnelles, 1 superclasse objet de réseau, 2 classes géométriques enfants, l'une pour les canalisations (linéaire), l'autre pour les ouvrages (ponctuel). En complément, 1 seul domaine de valeur structuré est organisé pour typer la nature du réseau humide en s'appuyant sur la liste de codes du standard STAR-DT. Sur cette base de liste, 4 vues matérialisées d'exploitation reconstituent les données respectivement pour les réseaux d'eau et assainissement (canalisation et ouvrage).
 
 ## Schéma fonctionnel
 
