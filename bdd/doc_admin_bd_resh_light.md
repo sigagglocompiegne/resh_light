@@ -3,13 +3,12 @@
 # Documentation d'administration de la base simplifiée des réseaux humides
 
 ## Principes
-* **généralités**
- 
-La base simplifiée des réseaux eau et assainissement est une base ayant pour objet d'avoir une vision harmonisée et simplifiée des différents réseaux délégués.
-La base est alimentée exclusivement 
- 
-* **résumé fonctionnel**
 
+La base simplifiée des réseaux eau et assainissement est une base ayant pour objet d'avoir une vision harmonisée et simplifiée des différents réseaux délégués.
+La base est alimentée exclusivement à partir des données transmises sous forme de fichiers structurés par les exploitants et selon leurs propres formats.
+En raison de la forte hétérogéinité (classes, attributs, domaines de valeurs), la base simplifiée de la collectivité s'appuiera pour l'essentiel sur les libéllés des valeurs exploitants sans chercher à constituer des domaines de valeur structurés, les usages sommaires étant compatibles.
+
+Sur la modélisation, la base comprend 3 classes relationnelles, 1 superclasse objet de réseau, 2 classes géomatriques enfants, l'une pour les canalisations (linéaire), l'autre pour les ouvrage (ponctuel). En complément, 1 seul domaine de valeur structuré est organisé pour typer la nature du réseau humide et reprend pour ces réseaux, la liste des codes du standard STAR-DT. Sur cette base de liste, 
 
 ## Schéma fonctionnel
 
