@@ -22,7 +22,7 @@ La base de données simplifié des réseaux humides ne présente aucune dépenda
 
 L'ensemble des classes d'objets de gestion sont stockées dans le schéma m_reseau_humide.
 
- ### classes d'objets de gestion :
+ ### classes d'objets de gestion
   
    `an_resh_objet` : Classe abstraite décrivant un objet d''un réseau humide
    
@@ -43,6 +43,7 @@ L'ensemble des classes d'objets de gestion sont stockées dans le schéma m_rese
 
 Particularité(s) à noter :
 * Une clé primaire existe sur le champ idresh
+* Une clé étrangère existe sur le champ natresh vers le domaine de valeur considéré
 ---
 
    `geo_resh_can` : Classe décrivant une canalisation d'un réseau humide
@@ -57,6 +58,9 @@ Particularité(s) à noter :
 |longcalc|Longueur calculée de la canalisation en mètre|numeric(7,3)| |
 |geom|Géométrie linéaire de l'objet|geometry(LineString,2154)| |
 
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ idresh
+* Une clé étrangère existe sur le champ idresh vers l'attribut du même nom de la classe an_resh_objet
 ---
 
    `geo_resh_ouv` : Classe décrivant un ouvrage d'un réseau humide
@@ -71,3 +75,18 @@ Particularité(s) à noter :
 |zrad|Altimétrie de la cote radier (en mètres, Référentiel NGFIGN69)|numeric(7,3)| |
 |geom|Géométrie ponctuelle de l'objet|geometry(Point,2154)| |
 
+Particularité(s) à noter :
+* Une clé primaire existe sur le champ idresh
+* Une clé étrangère existe sur le champ idresh vers l'attribut du même nom de la classe an_resh_objet
+
+ ### domaine de valeur
+ 
+    `lt_resh_natresh` : Nature du réseau humide conformément à la liste des réseaux de la NF P98-332
+
+|Code | Valeur | Couleur | 
+|:---|:---|:---|
+|AEP|Eau potable|#00B0F0|
+|ASS|Assainissement et pluvial|#663300|
+|ASSEP|Eaux pluviales|#663300|
+|ASSEU|Eaux usées|#663300|
+|ASSUN|Réseau unitaire|#663300|
