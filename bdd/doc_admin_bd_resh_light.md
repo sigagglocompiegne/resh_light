@@ -34,7 +34,7 @@ L'ensemble des classes d'objets de gestion sont stockées dans le schéma m_rese
 |enservice|Objet en service ou non (abandonné)|character varying(1)| |
 |sourmaj|Source de la mise à jour|character varying(100)| |
 |datemaj|Date de la dernière mise à jour des informations|date| |
-|qualgloc|Qualité de la géolocalisation (XYZ)|character varying(1)| |
+|qualgloc|Qualité de la géolocalisation (XYZ)|character varying(1)|C|
 |insee|Code INSEE|character varying(5)| |
 |refcontrat|Références du contrat de délégation|character varying(254)| |
 |observ|Observations|character varying(254)| |
