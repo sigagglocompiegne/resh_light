@@ -4,7 +4,7 @@
 
 ## Principes
 
-La base simplifiée des réseaux eau et assainissement est une base ayant pour objet de disposer d'une vision harmonisée et simplifiée des différents réseaux délégués.
+La base simplifiée des réseaux eau et assainissement est une base ayant pour objet l'obtention d'une vision harmonisée et simplifiée des différents réseaux délégués.
 La base est alimentée **exclusivement** à partir des données transmises sous forme de fichiers structurés par les exploitants et selon leurs propres formats.
 En raison de la forte hétérogéneité des sources (classes, attributs, domaines de valeurs), la base simplifiée de la collectivité s'appuie pour l'essentiel sur les libéllés exploitants sans recherche de structuration de domaines de valeur, les usages sommaires à l'aval étant compatibles à ce stade.
 
