@@ -3,12 +3,12 @@ Base de données "simplifiée" des réseaux eau et assainissement issues des don
 Creation du squelette de la structure (table, séquence, ...)
 init_bd_resh_light.sql
 
-GeoCompiegnois - https://geo.compiegnois.fr/
+GeoCompiegnois - http://geo.compiegnois.fr/
 Auteur : Florent Vanhoutte
 */
 
--- 2021/02/21 : FV / initialisation du code avec comme point de départ le format RAEPA 1.1
-
+-- 2021/02/12 : FV / initialisation du code avec comme point de départ le format RAEPA 1.1
+-- 2021/02/15 : FV / changement pour cohérence générale de l'entrepôt du nom du domaine de valeur lt_natresh en lt_resh_natresh
 
 -- ####################################################################################################################################################
 -- ###                                                                                                                                              ###
@@ -24,13 +24,13 @@ DROP MATERIALIZED VIEW IF EXISTS m_reseau_humide.geo_vm_resh_ouvass;
 -- fkey
 ALTER TABLE IF EXISTS m_reseau_humide.geo_resh_can DROP CONSTRAINT geo_resh_can_idresh_fkey;
 ALTER TABLE IF EXISTS m_reseau_humide.geo_resh_ouv DROP CONSTRAINT geo_resh_ouv_idresh_fkey;
-ALTER TABLE IF EXISTS m_reseau_humide.an_resh_objet DROP CONSTRAINT lt_natresh_fkey;
+ALTER TABLE IF EXISTS m_reseau_humide.an_resh_objet DROP CONSTRAINT lt_resh_natresh_fkey;
 -- classe
 DROP TABLE IF EXISTS m_reseau_humide.geo_resh_ouv;
 DROP TABLE IF EXISTS m_reseau_humide.geo_resh_can;
 DROP TABLE IF EXISTS m_reseau_humide.an_resh_objet;
 -- domaine de valeur
-DROP TABLE IF EXISTS m_reseau_humide.lt_natresh;
+DROP TABLE IF EXISTS m_reseau_humide.lt_resh_natresh;
 -- sequence
 DROP SEQUENCE IF EXISTS m_reseau_humide.idresh_seq;
 
@@ -43,28 +43,28 @@ DROP SEQUENCE IF EXISTS m_reseau_humide.idresh_seq;
 
 -- **************  Nature du réseau  **************
 
--- Table: m_reseau_humide.lt_natresh
+-- Table: m_reseau_humide.lt_resh_natresh
 
--- DROP TABLE m_reseau_humide.lt_natresh;
+-- DROP TABLE m_reseau_humide.lt_resh_natresh;
 
-CREATE TABLE m_reseau_humide.lt_natresh
+CREATE TABLE m_reseau_humide.lt_resh_natresh
 (
   code character varying(7) NOT NULL,
   valeur character varying(80) NOT NULL,
   couleur character varying(7) NOT NULL,
-  CONSTRAINT lt_natresh_pkey PRIMARY KEY (code)
+  CONSTRAINT lt_resh_natresh_pkey PRIMARY KEY (code)
 )
 WITH (
   OIDS=FALSE
 );
 
-COMMENT ON TABLE m_reseau_humide.lt_natresh
+COMMENT ON TABLE m_reseau_humide.lt_resh_natresh
   IS 'Nature du réseau humide conformément à la liste des réseaux de la NF P98-332';
-COMMENT ON COLUMN m_reseau_humide.lt_natresh.code IS 'Code de la liste énumérée relative à la nature du réseau humide';
-COMMENT ON COLUMN m_reseau_humide.lt_natresh.valeur IS 'Valeur de la liste énumérée relative à la nature du réseau humide';
-COMMENT ON COLUMN m_reseau_humide.lt_natresh.couleur IS 'Code couleur (hexadecimal) des réseaux enterrés selon la norme NF P 98-332';
+COMMENT ON COLUMN m_reseau_humide.lt_resh_natresh.code IS 'Code de la liste énumérée relative à la nature du réseau humide';
+COMMENT ON COLUMN m_reseau_humide.lt_resh_natresh.valeur IS 'Valeur de la liste énumérée relative à la nature du réseau humide';
+COMMENT ON COLUMN m_reseau_humide.lt_resh_natresh.couleur IS 'Code couleur (hexadecimal) des réseaux enterrés selon la norme NF P 98-332';
 
-INSERT INTO m_reseau_humide.lt_natresh(
+INSERT INTO m_reseau_humide.lt_resh_natresh(
             code, valeur, couleur)
     VALUES
 ('AEP','Eau potable','#00B0F0'),
@@ -224,8 +224,8 @@ COMMENT ON COLUMN m_reseau_humide.geo_resh_can.geom IS 'Géométrie linéaire de
 -- NATURE DU RESEAU
 
 ALTER TABLE m_reseau_humide.an_resh_objet               
-  ADD CONSTRAINT lt_natresh_fkey FOREIGN KEY (natresh)
-      REFERENCES m_reseau_humide.lt_natresh (code) MATCH SIMPLE
+  ADD CONSTRAINT lt_resh_natresh_fkey FOREIGN KEY (natresh)
+      REFERENCES m_reseau_humide.lt_resh_natresh (code) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION;
 
 -- IDRESH
@@ -478,11 +478,11 @@ COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.geom IS 'Géométrie ponctu
 -- ####################################################################################################################################################
 
 
-ALTER TABLE m_reseau_humide.lt_natresh
+ALTER TABLE m_reseau_humide.lt_resh_natresh
   OWNER TO sig_create;
-GRANT ALL ON TABLE m_reseau_humide.lt_natresh TO sig_create;
-GRANT SELECT ON TABLE m_reseau_humide.lt_natresh TO read_sig;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.lt_natresh TO edit_sig;
+GRANT ALL ON TABLE m_reseau_humide.lt_resh_natresh TO sig_create;
+GRANT SELECT ON TABLE m_reseau_humide.lt_resh_natresh TO read_sig;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.lt_resh_natresh TO edit_sig;
 
 ALTER TABLE m_reseau_humide.an_resh_objet
   OWNER TO sig_create;
