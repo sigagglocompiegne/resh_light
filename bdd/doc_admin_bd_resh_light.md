@@ -3,7 +3,10 @@
 # Documentation d'administration de la base simplifiée des réseaux humides
 
 ## Principes
-* **généralité**
+* **généralités**
+ 
+La base simplifiée des réseaux eau et assainissement est une base ayant pour objet d'avoir une vision harmonisée et simplifiée des différents réseaux délégués.
+La base est alimentée exclusivement 
  
 * **résumé fonctionnel**
 
