@@ -44,6 +44,7 @@ L'ensemble des classes d'objets de gestion sont stockées dans le schéma m_rese
 Particularité(s) à noter :
 * Une clé primaire existe sur le champ idresh
 * Une clé étrangère existe sur le champ natresh vers le domaine de valeur considéré
+
 ---
 
    `geo_resh_can` : Classe décrivant une canalisation d'un réseau humide
@@ -61,6 +62,7 @@ Particularité(s) à noter :
 Particularité(s) à noter :
 * Une clé primaire existe sur le champ idresh
 * Une clé étrangère existe sur le champ idresh vers l'attribut du même nom de la classe an_resh_objet
+
 ---
 
    `geo_resh_ouv` : Classe décrivant un ouvrage d'un réseau humide
@@ -80,8 +82,8 @@ Particularité(s) à noter :
 * Une clé étrangère existe sur le champ idresh vers l'attribut du même nom de la classe an_resh_objet
 
  ### domaine de valeur
- 
-    `lt_resh_natresh` : Nature du réseau humide conformément à la liste des réseaux de la NF P98-332
+
+   `lt_resh_natresh` : Nature du réseau humide conformément à la liste des réseaux de la NF P98-332
 
 |Code | Valeur | Couleur | 
 |:---|:---|:---|
