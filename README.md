@@ -1,8 +1,13 @@
 ![picto](https://github.com/sigagglocompiegne/orga_gest_igeo/blob/master/doc/img/geocompiegnois_2020_reduit_v2.png)
 
+(x) en cours de rédaction
+
 # Modèle simplifié des réseaux eau et assainissement
 
-(x) en cours de rédaction
+Spécification du modèle de données simplifié relatif aux réseaux d'eau et d'assainissement sur le territoire de l'Agglomération de la Région de Compiègne.
+
+- [Script d'initialisation de la base de données](bdd/init_bd_resh_light.sql) 
+- [Documentation d'administration de la base](bdd/doc_admin_bd_resh_light.md) 
 
 ## Contexte
 
@@ -29,5 +34,3 @@ Les données relevant de ce modèle simplifié ont vocation à être intégrées
 
 ## Ressources
 
-- [Script d'initialisation de la base de données simplifiée réseaux humides](bdd/init_bd_resh_light.sql) 
-- [Documentation d'administration de la base_données simplifiée réseaux humides](bdd/doc_admin_bd_resh_light.md) 
