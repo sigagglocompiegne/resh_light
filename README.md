@@ -1,6 +1,5 @@
 ![picto](https://github.com/sigagglocompiegne/orga_gest_igeo/blob/master/doc/img/geocompiegnois_2020_reduit_v2.png)
 
-
 # Modèle simplifié des réseaux eau et assainissement
 
 Spécification du modèle de données simplifié relatif aux réseaux d'eau et d'assainissement sur le territoire de l'Agglomération de la Région de Compiègne.
