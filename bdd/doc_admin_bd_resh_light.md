@@ -22,7 +22,7 @@ La base de données simplifié des réseaux humides ne présente aucune dépenda
 
 L'ensemble des classes d'objets de gestion sont stockées dans le schéma m_reseau_humide.
 
- ### classes d'objets de gestion
+ ### Classes d'objets de gestion
   
    `an_resh_objet` : Classe abstraite décrivant un objet d''un réseau humide
    
@@ -81,7 +81,7 @@ Particularité(s) à noter :
 * Une clé primaire existe sur le champ idresh
 * Une clé étrangère existe sur le champ idresh vers l'attribut du même nom de la classe an_resh_objet
 
- ### domaine de valeur
+ ### Domaine de valeur
 
    `lt_resh_natresh` : Nature du réseau humide conformément à la liste des réseaux de la NF P98-332
 
@@ -92,3 +92,15 @@ Particularité(s) à noter :
 |ASSEP|Eaux pluviales|#663300|
 |ASSEU|Eaux usées|#663300|
 |ASSUN|Réseau unitaire|#663300|
+
+ ## Vues d'exploitation
+ 
+ 4 vues **matérialisées** sont intégrées au schéma métier pour rendre compte des données canalisations et ouvrages par réseau AEP ou ASS :
+ 
+ |Nom | Description |
+ |:---|:---|
+ |geo_vm_resh_ouvae|Ouvrage du réseau d'adduction d'eau|
+ |geo_vm_resh_canae|Canalisation du réseau d'adduction d'eau|
+ |geo_vm_resh_ouvass|Ouvrage du réseau d'assainissement|
+ |geo_vm_resh_canass|Canalisation du réseau d'assainissement|
+ 
