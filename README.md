@@ -29,6 +29,3 @@ Les attendus de connaissance pour ce modèle simplifié concernent donc sommaire
 Les données relevant de ce modèle simplifié ont vocation à être intégrées pour diffusion dans :
 * une application généraliste de connaissance sommaire de l'ensemble des réseaux
 * une application dédiée aux réseaux d'eau et assainissement permettant d'adapter une réprésentation métier et associer d'autres informations du domaine 
-
-## Ressources
-
