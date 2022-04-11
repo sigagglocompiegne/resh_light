@@ -22,8 +22,9 @@ Les attendus de connaissance pour ce modèle simplifié concernent donc sommaire
 * la position cartographique des ouvrages du réseaux (canalisation, installation)
 * la classe de précision cartographique au sens DT-DICT lorsqu'elle est renseignée (C à défaut)
 * la nature et les cotes terrain naturel / radier de l'installation ponctuelle (avaloir, regard, plaque pleine ...)
-* le diamètre, matériau de la canalisation
-* l'exploitant et la référence de contrat
+* le diamètre, matériau et forme de la section de la canalisation
+* le maitre d'ouvrage, l'exploitant et la référence / nom du contrat
+* année ou période de pose
 * les métadonnées qualités (date de la source ...)
 
 Les données relevant de ce modèle simplifié ont vocation à être intégrées pour diffusion dans :
