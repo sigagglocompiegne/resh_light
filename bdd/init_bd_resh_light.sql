@@ -7,8 +7,9 @@ GeoCompiegnois - http://geo.compiegnois.fr/
 Auteur : Florent Vanhoutte
 */
 
--- 2021/02/12 : FV / initialisation du code avec comme point de départ le format RAEPA 1.1
--- 2021/02/15 : FV / changement pour cohérence générale de l'entrepôt du nom du domaine de valeur lt_natresh en lt_resh_natresh
+-- 2021/02/21 : FV / initialisation du code avec comme point de départ le format RAEPA 1.1
+-- 2022/04/01 : FV / revision du code avec élargissement à quelques attributs complémentaires du format RAEPA principalement (ex : période de pose, forme section, abréviation matériau (étiquette), maitre d'ouvrage, exploitant) et dans le cadre d'une extension au Grand Compiégnois
+
 
 -- ####################################################################################################################################################
 -- ###                                                                                                                                              ###
@@ -33,6 +34,8 @@ DROP TABLE IF EXISTS m_reseau_humide.an_resh_objet;
 DROP TABLE IF EXISTS m_reseau_humide.lt_resh_natresh;
 -- sequence
 DROP SEQUENCE IF EXISTS m_reseau_humide.idresh_seq;
+
+
 
 -- ####################################################################################################################################################
 -- ###                                                                                                                                              ###
@@ -72,6 +75,9 @@ INSERT INTO m_reseau_humide.lt_resh_natresh(
 ('ASSEP','Eaux pluviales','#663300'),
 ('ASSEU','Eaux usées','#663300'),
 ('ASSUN','Réseau unitaire','#663300');
+
+
+-- voir ultérieurement à ajouter des domaines pour harmoniser type d'ouvrage, table des abréviations de matériau etc ... 
 
 
 -- ####################################################################################################################################################
@@ -116,12 +122,17 @@ CREATE TABLE m_reseau_humide.an_resh_objet
   idresh bigint NOT NULL,
   refprod character varying(254),
   natresh character varying(5),
-  enservice character varying(1),  
+  enservice character varying(1),
+  andebpose character varying(4),
+  anfinpose character varying(4), 
   sourmaj character varying(100) NOT NULL,  
   datemaj date NOT NULL,
   qualgloc character varying(1) NOT NULL DEFAULT 'C', 
   insee character varying(5),
-  refcontrat character varying(254), 
+  mouvrage character varying(100), 
+  gexploit character varying(100),
+  refcontrat character varying(100),
+  libcontrat character varying(254), 
   observ character varying(254),
   dbinsert timestamp without time zone NOT NULL DEFAULT now(),  
   dbupdate timestamp without time zone,  
@@ -135,13 +146,18 @@ COMMENT ON TABLE m_reseau_humide.an_resh_objet
   IS 'Classe abstraite décrivant un objet d''un réseau humide';
 COMMENT ON COLUMN m_reseau_humide.an_resh_objet.idresh IS 'Identifiant unique d''objet';  
 COMMENT ON COLUMN m_reseau_humide.an_resh_objet.refprod IS 'Référence producteur de l''entité';
-COMMENT ON COLUMN m_reseau_humide.an_resh_objet.enservice IS 'Objet en service ou non (abandonné)'; 
+COMMENT ON COLUMN m_reseau_humide.an_resh_objet.enservice IS 'Objet en service ou non (abandonné)';
+COMMENT ON COLUMN m_reseau_humide.an_resh_objet.andebpose IS 'Année marquant le début de la période de pose';
+COMMENT ON COLUMN m_reseau_humide.an_resh_objet.anfinpose IS 'Année marquant la fin de la période de pose';  
 COMMENT ON COLUMN m_reseau_humide.an_resh_objet.natresh IS 'Nature du réseau humide';
 COMMENT ON COLUMN m_reseau_humide.an_resh_objet.sourmaj IS 'Source de la mise à jour';
 COMMENT ON COLUMN m_reseau_humide.an_resh_objet.datemaj IS 'Date de la dernière mise à jour des informations';
 COMMENT ON COLUMN m_reseau_humide.an_resh_objet.qualgloc IS 'Qualité de la géolocalisation (XYZ)';
 COMMENT ON COLUMN m_reseau_humide.an_resh_objet.insee IS 'Code INSEE';
-COMMENT ON COLUMN m_reseau_humide.an_resh_objet.refcontrat IS 'Références du contrat de délégation';
+COMMENT ON COLUMN m_reseau_humide.an_resh_objet.mouvrage IS 'Maître d''ouvrage du réseau';
+COMMENT ON COLUMN m_reseau_humide.an_resh_objet.gexploit IS 'Gestionnaire exploitant du réseau';
+COMMENT ON COLUMN m_reseau_humide.an_resh_objet.refcontrat IS 'Référence du contrat de délégation';
+COMMENT ON COLUMN m_reseau_humide.an_resh_objet.libcontrat IS 'Nom du contrat de délégation';
 COMMENT ON COLUMN m_reseau_humide.an_resh_objet.observ IS 'Observations';
 COMMENT ON COLUMN m_reseau_humide.an_resh_objet.dbinsert IS 'Horodatage de l''intégration en base de l''objet';
 COMMENT ON COLUMN m_reseau_humide.an_resh_objet.dbupdate IS 'Horodatage de la mise à jour en base de l''objet';
@@ -192,7 +208,9 @@ CREATE TABLE m_reseau_humide.geo_resh_can
   idresh bigint NOT NULL,
   branchemnt character varying(1),
   materiau character varying(80),
+  mateabrev character varying(5),
   diametre integer,
+  formcana character varying(30),
   modecirc character varying(80),   
   longcalc numeric(7,3) NOT NULL,
   geom geometry(LineString,2154) NOT NULL,
@@ -208,7 +226,9 @@ COMMENT ON TABLE m_reseau_humide.geo_resh_can
 COMMENT ON COLUMN m_reseau_humide.geo_resh_can.idresh IS 'Identifiant unique d''objet';
 COMMENT ON COLUMN m_reseau_humide.geo_resh_can.branchemnt IS 'Canalisation de branchement individuel (O/N)';
 COMMENT ON COLUMN m_reseau_humide.geo_resh_can.materiau IS 'Matériau de la canalisation';
+COMMENT ON COLUMN m_reseau_humide.geo_resh_can.mateabrev IS 'Abréviation du matériau de la canalisation';
 COMMENT ON COLUMN m_reseau_humide.geo_resh_can.diametre IS 'Diamètre nominal de la canalisation (en millimètres)';
+COMMENT ON COLUMN m_reseau_humide.geo_resh_can.formcana IS 'Forme (Section) de la canalisation';
 COMMENT ON COLUMN m_reseau_humide.geo_resh_can.modecirc IS 'Mode de circulation de l''eau à l''intérieur de la canalisation';
 COMMENT ON COLUMN m_reseau_humide.geo_resh_can.longcalc IS 'Longueur calculée de la canalisation en mètre';
 COMMENT ON COLUMN m_reseau_humide.geo_resh_can.geom IS 'Géométrie linéaire de l''objet';
@@ -226,19 +246,19 @@ COMMENT ON COLUMN m_reseau_humide.geo_resh_can.geom IS 'Géométrie linéaire de
 ALTER TABLE m_reseau_humide.an_resh_objet               
   ADD CONSTRAINT lt_resh_natresh_fkey FOREIGN KEY (natresh)
       REFERENCES m_reseau_humide.lt_resh_natresh (code) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION;
+      ON UPDATE NO ACTION ON DELETE CASCADE;
 
 -- IDRESH
 
 ALTER TABLE m_reseau_humide.geo_resh_can
   ADD CONSTRAINT geo_resh_can_idresh_fkey FOREIGN KEY (idresh)
       REFERENCES m_reseau_humide.an_resh_objet (idresh) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION;
+      ON UPDATE NO ACTION ON DELETE CASCADE;
 
 ALTER TABLE m_reseau_humide.geo_resh_ouv
   ADD CONSTRAINT geo_resh_ouv_idresh_fkey FOREIGN KEY (idresh)
       REFERENCES m_reseau_humide.an_resh_objet (idresh) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION;
+      ON UPDATE NO ACTION ON DELETE CASCADE;
 
 
 -- ####################################################################################################################################################
@@ -263,14 +283,21 @@ CREATE MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_canae AS
   a.enservice,
   g.branchemnt,
   g.materiau,
+  g.mateabrev,  
   g.diametre,
+  g.formcana,   
   g.modecirc,   
   g.longcalc,
+  a.andebpose,
+  a.anfinpose,
   a.sourmaj,  
   a.datemaj,
   a.qualgloc,
   a.insee,
-  a.refcontrat, 
+  a.mouvrage,
+  a.gexploit,
+  a.refcontrat,
+  a.libcontrat, 
   a.observ,
   a.dbinsert,  
   a.dbupdate,
@@ -287,18 +314,25 @@ COMMENT ON MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_canae
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.idresh IS 'Identifiant unique d''objet';  
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.refprod IS 'Référence producteur de l''entité';  
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.natresh IS 'Nature du réseau humide';
-COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.enservice IS 'Objet en service ou non (abandonné)'; 
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.enservice IS 'Objet en service ou non (abandonné)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.andebpose IS 'Année marquant le début de la période de pose';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.anfinpose IS 'Année marquant la fin de la période de pose';   
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.sourmaj IS 'Source de la mise à jour';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.datemaj IS 'Date de la dernière mise à jour des informations';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.qualgloc IS 'Qualité de la géolocalisation (XYZ)';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.insee IS 'Code INSEE';
-COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.refcontrat IS 'Références du contrat de délégation';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.mouvrage IS 'Maître d''ouvrage du réseau';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.gexploit IS 'Gestionnaire exploitant du réseau';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.refcontrat IS 'Référence du contrat de délégation';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.libcontrat IS 'Nom du contrat de délégation';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.observ IS 'Observations';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.dbinsert IS 'Horodatage de l''intégration en base de l''objet';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.dbupdate IS 'Horodatage de la mise à jour en base de l''objet';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.branchemnt IS 'Canalisation de branchement individuel (O/N)';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.materiau IS 'Matériau de la canalisation';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.mateabrev IS 'Abréviation du matériau de la canalisation';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.diametre IS 'Diamètre nominal de la canalisation (en millimètres)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.formcana IS 'Forme (Section) de la canalisation';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.modecirc IS 'Mode de circulation de l''eau à l''intérieur de la canalisation';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.longcalc IS 'Longueur calculée de la canalisation en mètre';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canae.geom IS 'Géométrie linéaire de l''objet';
@@ -318,14 +352,21 @@ CREATE MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_canass AS
   a.enservice,
   g.branchemnt,
   g.materiau,
+  g.mateabrev,  
   g.diametre,
+  g.formcana,  
   g.modecirc,   
   g.longcalc,
+  a.andebpose,
+  a.anfinpose,  
   a.sourmaj,  
   a.datemaj,
   a.qualgloc,
   a.insee,
-  a.refcontrat, 
+  a.mouvrage,
+  a.gexploit,  
+  a.refcontrat,
+  a.libcontrat, 
   a.observ,
   a.dbinsert,  
   a.dbupdate,
@@ -342,18 +383,25 @@ COMMENT ON MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_canass
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.idresh IS 'Identifiant unique d''objet';  
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.refprod IS 'Référence producteur de l''entité';  
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.natresh IS 'Nature du réseau humide';
-COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.enservice IS 'Objet en service ou non (abandonné)'; 
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.enservice IS 'Objet en service ou non (abandonné)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.andebpose IS 'Année marquant le début de la période de pose';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.anfinpose IS 'Année marquant la fin de la période de pose';  
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.sourmaj IS 'Source de la mise à jour';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.datemaj IS 'Date de la dernière mise à jour des informations';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.qualgloc IS 'Qualité de la géolocalisation (XYZ)';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.insee IS 'Code INSEE';
-COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.refcontrat IS 'Références du contrat de délégation';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.mouvrage IS 'Maître d''ouvrage du réseau';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.gexploit IS 'Gestionnaire exploitant du réseau';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.refcontrat IS 'Référence du contrat de délégation';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.libcontrat IS 'Nom du contrat de délégation';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.observ IS 'Observations';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.dbinsert IS 'Horodatage de l''intégration en base de l''objet';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.dbupdate IS 'Horodatage de la mise à jour en base de l''objet';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.branchemnt IS 'Canalisation de branchement individuel (O/N)';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.materiau IS 'Matériau de la canalisation';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.mateabrev IS 'Abréviation du matériau de la canalisation';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.diametre IS 'Diamètre nominal de la canalisation (en millimètres)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.formcana IS 'Forme (Section) de la canalisation';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.modecirc IS 'Mode de circulation de l''eau à l''intérieur de la canalisation';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.longcalc IS 'Longueur calculée de la canalisation en mètre';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.geom IS 'Géométrie linéaire de l''objet';
@@ -377,11 +425,16 @@ CREATE MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_ouvae AS
   g.y,
   g.ztn,   
   g.zrad,
+  a.andebpose,
+  a.anfinpose,  
   a.sourmaj,  
   a.datemaj,
   a.qualgloc,
   a.insee,
-  a.refcontrat, 
+  a.mouvrage,
+  a.gexploit,    
+  a.refcontrat,
+  a.libcontrat, 
   a.observ,
   a.dbinsert,  
   a.dbupdate,
@@ -398,12 +451,17 @@ COMMENT ON MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_ouvae
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.idresh IS 'Identifiant unique d''objet';  
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.refprod IS 'Référence producteur de l''entité';  
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.natresh IS 'Nature du réseau humide';
-COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.enservice IS 'Objet en service ou non (abandonné)'; 
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.enservice IS 'Objet en service ou non (abandonné)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.andebpose IS 'Année marquant le début de la période de pose';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.anfinpose IS 'Année marquant la fin de la période de pose';  
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.sourmaj IS 'Source de la mise à jour';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.datemaj IS 'Date de la dernière mise à jour des informations';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.qualgloc IS 'Qualité de la géolocalisation (XYZ)';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.insee IS 'Code INSEE';
-COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.refcontrat IS 'Références du contrat de délégation';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.mouvrage IS 'Maître d''ouvrage du réseau';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.gexploit IS 'Gestionnaire exploitant du réseau';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.refcontrat IS 'Référence du contrat de délégation';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.libcontrat IS 'Nom du contrat de délégation';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.observ IS 'Observations';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.dbinsert IS 'Horodatage de l''intégration en base de l''objet';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvae.dbupdate IS 'Horodatage de la mise à jour en base de l''objet';
@@ -432,11 +490,16 @@ CREATE MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_ouvass AS
   g.y,
   g.ztn,   
   g.zrad,
+  a.andebpose,
+  a.anfinpose,  
   a.sourmaj,  
   a.datemaj,
   a.qualgloc,
   a.insee,
-  a.refcontrat, 
+  a.mouvrage,
+  a.gexploit,    
+  a.refcontrat,
+  a.libcontrat, 
   a.observ,
   a.dbinsert,  
   a.dbupdate,
@@ -453,12 +516,17 @@ COMMENT ON MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_ouvass
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.idresh IS 'Identifiant unique d''objet';  
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.refprod IS 'Référence producteur de l''entité';  
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.natresh IS 'Nature du réseau humide';
-COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.enservice IS 'Objet en service ou non (abandonné)'; 
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.enservice IS 'Objet en service ou non (abandonné)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.andebpose IS 'Année marquant le début de la période de pose';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.anfinpose IS 'Année marquant la fin de la période de pose';   
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.sourmaj IS 'Source de la mise à jour';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.datemaj IS 'Date de la dernière mise à jour des informations';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.qualgloc IS 'Qualité de la géolocalisation (XYZ)';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.insee IS 'Code INSEE';
-COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.refcontrat IS 'Références du contrat de délégation';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.mouvrage IS 'Maître d''ouvrage du réseau';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.gexploit IS 'Gestionnaire exploitant du réseau';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.refcontrat IS 'Référence du contrat de délégation';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.libcontrat IS 'Nom du contrat de délégation';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.observ IS 'Observations';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.dbinsert IS 'Horodatage de l''intégration en base de l''objet';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.dbupdate IS 'Horodatage de la mise à jour en base de l''objet';
