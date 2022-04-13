@@ -102,12 +102,14 @@ Particularité(s) à noter :
 
  ## Vues d'exploitation
  
- 4 vues **matérialisées** sont intégrées au schéma métier pour rendre compte des données canalisations et ouvrages par réseau AEP ou ASS :
+ 6 vues **matérialisées** sont intégrées au schéma métier pour rendre compte des données canalisations et ouvrages par réseau AEP ou ASS :
  
  |Nom | Description |
  |:---|:---|
  |geo_vm_resh_ouvae|Ouvrage du réseau d'adduction d'eau|
  |geo_vm_resh_canae|Canalisation du réseau d'adduction d'eau|
- |geo_vm_resh_ouvass|Ouvrage du réseau d'assainissement|
- |geo_vm_resh_canass|Canalisation du réseau d'assainissement|
+ |geo_vm_resh_ouvass|Ouvrage du réseau d'assainissement (hors pluvial)|
+ |geo_vm_resh_canass|Canalisation du réseau d'assainissement (hors pluvial)|
+ |geo_vm_resh_ouvassep|Ouvrage du réseau d'assainissement des eaux pluviales|
+ |geo_vm_resh_canassep|Canalisation du réseau d'assainissement des eaux pluviales|
  
