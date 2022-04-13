@@ -102,14 +102,23 @@ Particularité(s) à noter :
 
  ## Vues d'exploitation
  
- 6 vues **matérialisées** sont intégrées au schéma métier pour rendre compte des données canalisations et ouvrages par réseau AEP ou ASS :
+ 4 vues **matérialisées** sont intégrées au schéma métier pour rendre compte des données canalisations et ouvrages par réseau AEP ou ASS :
  
  |Nom | Description |
  |:---|:---|
  |geo_vm_resh_ouvae|Ouvrage du réseau d'adduction d'eau|
  |geo_vm_resh_canae|Canalisation du réseau d'adduction d'eau|
- |geo_vm_resh_ouvass|Ouvrage du réseau d'assainissement (hors pluvial)|
- |geo_vm_resh_canass|Canalisation du réseau d'assainissement (hors pluvial)|
+ |geo_vm_resh_ouvass|Ouvrage du réseau d'assainissement|
+ |geo_vm_resh_canass|Canalisation du réseau d'assainissement|
+ 
+  6 vues **matérialisées** pour rendre compte des données canalisations et ouvrages par sous type de réseau ASS (UN, EU, EP) :
+ 
+ |Nom | Description |
+ |:---|:---|
+ |geo_vm_resh_ouvasseu|Ouvrage du réseau d'assainissement des eaux usées|
+ |geo_vm_resh_canasseu|Canalisation du réseau d'assainissement des eaux usées|
+ |geo_vm_resh_ouvassun|Ouvrage du réseau d'assainissement unitaire|
+ |geo_vm_resh_canassun|Canalisation du réseau d'assainissement unitaire|
  |geo_vm_resh_ouvassep|Ouvrage du réseau d'assainissement des eaux pluviales|
  |geo_vm_resh_canassep|Canalisation du réseau d'assainissement des eaux pluviales|
  
