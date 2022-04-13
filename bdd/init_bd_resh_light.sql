@@ -9,7 +9,7 @@ Auteur : Florent Vanhoutte
 
 -- 2021/02/21 : FV / initialisation du code avec comme point de départ le format RAEPA 1.1
 -- 2022/04/01 : FV / revision du code avec élargissement à quelques attributs complémentaires du format RAEPA principalement (ex : période de pose, forme section, abréviation matériau (étiquette), maitre d'ouvrage, exploitant) et dans le cadre d'une extension au Grand Compiégnois
-
+-- 2022/04/13 : FV / adaptation pour vue spécifique ass pluvial
 
 -- ####################################################################################################################################################
 -- ###                                                                                                                                              ###
@@ -375,11 +375,11 @@ CREATE MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_canass AS
 FROM m_reseau_humide.geo_resh_can g
 LEFT JOIN m_reseau_humide.an_resh_objet a
 ON g.idresh = a.idresh
-WHERE a.natresh IN ('ASS', 'ASSEP', 'ASSEU', 'ASSUN')
+WHERE a.natresh IN ('ASS', 'ASSEU', 'ASSUN')
 ORDER BY a.idresh;
 
 COMMENT ON MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_canass
-  IS 'Canalisation du réseau d''assainissement';
+  IS 'Canalisation du réseau d''assainissement (hors pluvial)';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.idresh IS 'Identifiant unique d''objet';  
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.refprod IS 'Référence producteur de l''entité';  
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canass.natresh IS 'Nature du réseau humide';
@@ -508,11 +508,11 @@ CREATE MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_ouvass AS
 FROM m_reseau_humide.geo_resh_ouv g
 LEFT JOIN m_reseau_humide.an_resh_objet a
 ON g.idresh = a.idresh
-WHERE a.natresh IN ('ASS', 'ASSEP', 'ASSEU', 'ASSUN')
+WHERE a.natresh IN ('ASS', 'ASSEU', 'ASSUN')
 ORDER BY a.idresh;
 
 COMMENT ON MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_ouvass
-  IS 'Ouvrage du réseau d''assainissement';
+  IS 'Ouvrage du réseau d''assainissement (hors pluvial)';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.idresh IS 'Identifiant unique d''objet';  
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.refprod IS 'Référence producteur de l''entité';  
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.natresh IS 'Nature du réseau humide';
@@ -536,6 +536,141 @@ COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.y IS 'Coordonnée Y Lambert
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.ztn IS 'Altimétrie du terrain naturel (en mètres, Référentiel NGFIGN69)'; 
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.zrad IS 'Altimétrie de la cote radier (en mètres, Référentiel NGFIGN69)';
 COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvass.geom IS 'Géométrie ponctuelle de l''objet';
+
+
+-- #################################################################### VUE CANALISATION ASSEP ###############################################
+        
+-- View: m_reseau_humide.geo_vm_resh_canassep
+
+-- DROP MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_canassep;
+
+CREATE MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_canassep AS 
+ SELECT 
+  a.idresh,
+  a.refprod,
+  a.natresh,
+  a.enservice,
+  g.branchemnt,
+  g.materiau,
+  g.mateabrev,  
+  g.diametre,
+  g.formcana,  
+  g.modecirc,   
+  g.longcalc,
+  a.andebpose,
+  a.anfinpose,  
+  a.sourmaj,  
+  a.datemaj,
+  a.qualgloc,
+  a.insee,
+  a.mouvrage,
+  a.gexploit,  
+  a.refcontrat,
+  a.libcontrat, 
+  a.observ,
+  a.dbinsert,  
+  a.dbupdate,
+  g.geom
+  
+FROM m_reseau_humide.geo_resh_can g
+LEFT JOIN m_reseau_humide.an_resh_objet a
+ON g.idresh = a.idresh
+WHERE a.natresh IN ('ASSEP')
+ORDER BY a.idresh;
+
+COMMENT ON MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_canassep 
+  IS 'Canalisation du réseau d''assainissement des eaux pluviales';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canassep.idresh IS 'Identifiant unique d''objet';  
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canassep.refprod IS 'Référence producteur de l''entité';  
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canassep.natresh IS 'Nature du réseau humide';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canassep.enservice IS 'Objet en service ou non (abandonné)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canassep.andebpose IS 'Année marquant le début de la période de pose';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canassep.anfinpose IS 'Année marquant la fin de la période de pose';  
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canassep.sourmaj IS 'Source de la mise à jour';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canassep.datemaj IS 'Date de la dernière mise à jour des informations';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canassep.qualgloc IS 'Qualité de la géolocalisation (XYZ)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canassep.insee IS 'Code INSEE';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canassep.mouvrage IS 'Maître d''ouvrage du réseau';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canassep.gexploit IS 'Gestionnaire exploitant du réseau';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canassep.refcontrat IS 'Référence du contrat de délégation';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canassep.libcontrat IS 'Nom du contrat de délégation';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canassep.observ IS 'Observations';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canassep.dbinsert IS 'Horodatage de l''intégration en base de l''objet';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canassep.dbupdate IS 'Horodatage de la mise à jour en base de l''objet';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canassep.branchemnt IS 'Canalisation de branchement individuel (O/N)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canassep.materiau IS 'Matériau de la canalisation';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canassep.mateabrev IS 'Abréviation du matériau de la canalisation';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canassep.diametre IS 'Diamètre nominal de la canalisation (en millimètres)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canassep.formcana IS 'Forme (Section) de la canalisation';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canassep.modecirc IS 'Mode de circulation de l''eau à l''intérieur de la canalisation';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canassep.longcalc IS 'Longueur calculée de la canalisation en mètre';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_canassep.geom IS 'Géométrie linéaire de l''objet';
+
+
+-- #################################################################### VUE OUVRAGE ASSEP ###############################################
+        
+-- View: m_reseau_humide.geo_vm_resh_ouvassep
+
+-- DROP MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_ouvassep;
+
+CREATE MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_ouvassep AS 
+ SELECT 
+  a.idresh,
+  a.refprod,
+  a.natresh,
+  a.enservice,
+  g.fnouv,
+  g.x,
+  g.y,
+  g.ztn,   
+  g.zrad,
+  a.andebpose,
+  a.anfinpose,  
+  a.sourmaj,  
+  a.datemaj,
+  a.qualgloc,
+  a.insee,
+  a.mouvrage,
+  a.gexploit,    
+  a.refcontrat,
+  a.libcontrat, 
+  a.observ,
+  a.dbinsert,  
+  a.dbupdate,
+  g.geom
+  
+FROM m_reseau_humide.geo_resh_ouv g
+LEFT JOIN m_reseau_humide.an_resh_objet a
+ON g.idresh = a.idresh
+WHERE a.natresh IN ('ASSEP')
+ORDER BY a.idresh;
+
+COMMENT ON MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_ouvassep
+  IS 'Ouvrage du réseau d''assainissement des eaux pluviales';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvassep.idresh IS 'Identifiant unique d''objet';  
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvassep.refprod IS 'Référence producteur de l''entité';  
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvassep.natresh IS 'Nature du réseau humide';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvassep.enservice IS 'Objet en service ou non (abandonné)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvassep.andebpose IS 'Année marquant le début de la période de pose';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvassep.anfinpose IS 'Année marquant la fin de la période de pose';   
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvassep.sourmaj IS 'Source de la mise à jour';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvassep.datemaj IS 'Date de la dernière mise à jour des informations';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvassep.qualgloc IS 'Qualité de la géolocalisation (XYZ)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvassep.insee IS 'Code INSEE';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvassep.mouvrage IS 'Maître d''ouvrage du réseau';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvassep.gexploit IS 'Gestionnaire exploitant du réseau';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvassep.refcontrat IS 'Référence du contrat de délégation';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvassep.libcontrat IS 'Nom du contrat de délégation';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvassep.observ IS 'Observations';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvassep.dbinsert IS 'Horodatage de l''intégration en base de l''objet';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvassep.dbupdate IS 'Horodatage de la mise à jour en base de l''objet';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvassep.fnouv IS 'Fonction de l''ouvrage du réseau humide';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvassep.x IS 'Coordonnée X Lambert 93 (en mètres)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvassep.y IS 'Coordonnée Y Lambert 93 (en mètres)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvassep.ztn IS 'Altimétrie du terrain naturel (en mètres, Référentiel NGFIGN69)'; 
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvassep.zrad IS 'Altimétrie de la cote radier (en mètres, Référentiel NGFIGN69)';
+COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvassep.geom IS 'Géométrie ponctuelle de l''objet';
+
 
 
 
@@ -589,6 +724,19 @@ GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_canae TO read_sig;
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.geo_vm_resh_canae TO edit_sig;
 
 ALTER MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_canass
+  OWNER TO sig_create;
+GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_canass TO sig_create;
+GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_canass TO read_sig;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.geo_vm_resh_canass TO edit_sig;
+
+
+ALTER MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_ouvassep
+  OWNER TO sig_create;
+GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_ouvass TO sig_create;
+GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_ouvass TO read_sig;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.geo_vm_resh_ouvass TO edit_sig;
+
+ALTER MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_canassep
   OWNER TO sig_create;
 GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_canass TO sig_create;
 GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_canass TO read_sig;
