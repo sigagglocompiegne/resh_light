@@ -9,7 +9,7 @@ Auteur : Florent Vanhoutte
 
 -- 2021/02/21 : FV / initialisation du code avec comme point de départ le format RAEPA 1.1
 -- 2022/04/01 : FV / revision du code avec élargissement à quelques attributs complémentaires du format RAEPA principalement (ex : période de pose, forme section, abréviation matériau (étiquette), maitre d'ouvrage, exploitant) et dans le cadre d'une extension au Grand Compiégnois
--- 2022/04/13 : FV / ajouts vues spécifiques par sstyle assainissement (UN, EU, EP)
+-- 2022/04/13 : FV / ajout vues spécifiques par sstyle assainissement (UN, EU, EP)
 
 -- ####################################################################################################################################################
 -- ###                                                                                                                                              ###
