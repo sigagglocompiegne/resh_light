@@ -9,7 +9,7 @@ Auteur : Florent Vanhoutte
 
 -- 2021/02/21 : FV / initialisation du code avec comme point de départ le format RAEPA 1.1
 -- 2022/04/01 : FV / revision du code avec élargissement à quelques attributs complémentaires du format RAEPA principalement (ex : période de pose, forme section, abréviation matériau (étiquette), maitre d'ouvrage, exploitant) et dans le cadre d'une extension au Grand Compiégnois
--- 2022/04/13 : FV / ajout vues spécifiques par sstype assainissement (UN, EU, EP)
+-- 2022/04/13 : FV / ajout vues spécifiques par sstyle assainissement (UN, EU, EP)
 -- 2022/04/15 : FV / ajout vue spécifique sstype assainissement indéterminé
 
 -- ####################################################################################################################################################
@@ -21,8 +21,18 @@ Auteur : Florent Vanhoutte
 -- vue
 DROP MATERIALIZED VIEW IF EXISTS m_reseau_humide.geo_vm_resh_canae;
 DROP MATERIALIZED VIEW IF EXISTS m_reseau_humide.geo_vm_resh_canass;
+DROP MATERIALIZED VIEW IF EXISTS m_reseau_humide.geo_vm_resh_canasseu;
+DROP MATERIALIZED VIEW IF EXISTS m_reseau_humide.geo_vm_resh_canassun;
+DROP MATERIALIZED VIEW IF EXISTS m_reseau_humide.geo_vm_resh_canassep;
+DROP MATERIALIZED VIEW IF EXISTS m_reseau_humide.geo_vm_resh_canassnr;
 DROP MATERIALIZED VIEW IF EXISTS m_reseau_humide.geo_vm_resh_ouvae;
 DROP MATERIALIZED VIEW IF EXISTS m_reseau_humide.geo_vm_resh_ouvass;
+DROP MATERIALIZED VIEW IF EXISTS m_reseau_humide.geo_vm_resh_ouvasseu;
+DROP MATERIALIZED VIEW IF EXISTS m_reseau_humide.geo_vm_resh_ouvassun;
+DROP MATERIALIZED VIEW IF EXISTS m_reseau_humide.geo_vm_resh_ouvassep;
+DROP MATERIALIZED VIEW IF EXISTS m_reseau_humide.geo_vm_resh_ouvassnr;
+
+
 -- fkey
 ALTER TABLE IF EXISTS m_reseau_humide.geo_resh_can DROP CONSTRAINT geo_resh_can_idresh_fkey;
 ALTER TABLE IF EXISTS m_reseau_humide.geo_resh_ouv DROP CONSTRAINT geo_resh_ouv_idresh_fkey;
