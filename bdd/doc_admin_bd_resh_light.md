@@ -111,7 +111,7 @@ Particularité(s) à noter :
  |geo_vm_resh_ouvass|Ouvrage du réseau d'assainissement|
  |geo_vm_resh_canass|Canalisation du réseau d'assainissement|
  
-  En complément, 6 vues **matérialisées** rendent compte des données canalisations et ouvrages par sous type de réseau ASS (UN, EU, EP) :
+  En complément, 8 vues **matérialisées** rendent compte des données canalisations et ouvrages par sous type de réseau ASS (UN, EU, EP, NR) :
  
  |Nom | Description |
  |:---|:---|
@@ -121,4 +121,5 @@ Particularité(s) à noter :
  |geo_vm_resh_canassun|Canalisation du réseau d'assainissement unitaire|
  |geo_vm_resh_ouvassep|Ouvrage du réseau d'assainissement des eaux pluviales|
  |geo_vm_resh_canassep|Canalisation du réseau d'assainissement des eaux pluviales|
- 
+ |geo_vm_resh_ouvassnr|Ouvrage du réseau d'assainissement (sous type indéterminé)|
+ |geo_vm_resh_canassnr|Canalisation du réseau d'assainissement (sous type indéterminé)|
