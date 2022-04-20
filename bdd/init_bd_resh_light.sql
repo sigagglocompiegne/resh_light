@@ -10,7 +10,7 @@ Auteur : Florent Vanhoutte
 -- 2021/02/21 : FV / initialisation du code avec comme point de départ le format RAEPA 1.1
 -- 2022/04/01 : FV / revision du code avec élargissement à quelques attributs complémentaires du format RAEPA principalement (ex : période de pose, forme section, abréviation matériau (étiquette), maitre d'ouvrage, exploitant) et dans le cadre d'une extension au Grand Compiégnois
 -- 2022/04/13 : FV / ajout vues spécifiques par sstyle assainissement (UN, EU, EP)
--- 2022/04/15 : FV / ajout vue spécifique sstype assainissement indéterminé
+-- 2022/04/15 : FV / ajout vue spécifique sstype assainissement indéterminé + ajustements droits
 
 -- ####################################################################################################################################################
 -- ###                                                                                                                                              ###
@@ -1091,95 +1091,111 @@ COMMENT ON COLUMN m_reseau_humide.geo_vm_resh_ouvassnr.geom IS 'Géométrie ponc
 ALTER TABLE m_reseau_humide.lt_resh_natresh
   OWNER TO sig_create;
 GRANT ALL ON TABLE m_reseau_humide.lt_resh_natresh TO sig_create;
-GRANT SELECT ON TABLE m_reseau_humide.lt_resh_natresh TO read_sig;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.lt_resh_natresh TO edit_sig;
+GRANT SELECT ON TABLE m_reseau_humide.lt_resh_natresh TO sig_read;
+GRANT ALL ON TABLE m_reseau_humide.lt_resh_natresh TO create_sig;
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE m_reseau_humide.lt_resh_natresh TO sig_edit;
 
 ALTER TABLE m_reseau_humide.an_resh_objet
   OWNER TO sig_create;
 GRANT ALL ON TABLE m_reseau_humide.an_resh_objet TO sig_create;
-GRANT SELECT ON TABLE m_reseau_humide.an_resh_objet TO read_sig;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.an_resh_objet TO edit_sig;
-
+GRANT SELECT ON TABLE m_reseau_humide.an_resh_objet TO sig_read;
+GRANT ALL ON TABLE m_reseau_humide.an_resh_objet TO create_sig;
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE m_reseau_humide.an_resh_objet TO sig_edit;
+ 
 ALTER TABLE m_reseau_humide.geo_resh_can
   OWNER TO sig_create;
 GRANT ALL ON TABLE m_reseau_humide.geo_resh_can TO sig_create;
-GRANT SELECT ON TABLE m_reseau_humide.geo_resh_can TO read_sig;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.geo_resh_can TO edit_sig;
+GRANT SELECT ON TABLE m_reseau_humide.geo_resh_can TO sig_read;
+GRANT ALL ON TABLE m_reseau_humide.geo_resh_can TO create_sig;
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE m_reseau_humide.geo_resh_can TO sig_edit;
 
 ALTER TABLE m_reseau_humide.geo_resh_ouv
   OWNER TO sig_create;
 GRANT ALL ON TABLE m_reseau_humide.geo_resh_ouv TO sig_create;
-GRANT SELECT ON TABLE m_reseau_humide.geo_resh_ouv TO read_sig;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.geo_resh_ouv TO edit_sig;
+GRANT SELECT ON TABLE m_reseau_humide.geo_resh_ouv TO sig_read;
+GRANT ALL ON TABLE m_reseau_humide.geo_resh_ouv TO create_sig;
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE m_reseau_humide.geo_resh_ouv TO sig_edit;
 
 ALTER MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_canae
   OWNER TO sig_create;
 GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_canae TO sig_create;
-GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_canae TO read_sig;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.geo_vm_resh_canae TO edit_sig;
+GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_canae TO sig_read;
+GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_canae TO create_sig;
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE m_reseau_humide.geo_vm_resh_canae TO sig_edit;
 
 ALTER MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_ouvae
   OWNER TO sig_create;
 GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_ouvae TO sig_create;
-GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_ouvae TO read_sig;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.geo_vm_resh_ouvae TO edit_sig;
+GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_ouvae TO sig_read;
+GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_ouvae TO create_sig;
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE m_reseau_humide.geo_vm_resh_ouvae TO sig_edit;
  
 ALTER MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_canass
   OWNER TO sig_create;
 GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_canass TO sig_create;
-GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_canass TO read_sig;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.geo_vm_resh_canass TO edit_sig;
+GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_canass TO sig_read;
+GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_canass TO create_sig;
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE m_reseau_humide.geo_vm_resh_canass TO sig_edit;
 
 ALTER MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_ouvass
   OWNER TO sig_create;
 GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_ouvass TO sig_create;
-GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_ouvass TO read_sig;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.geo_vm_resh_ouvass TO edit_sig;
+GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_ouvass TO sig_read;
+GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_ouvass TO create_sig;
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE m_reseau_humide.geo_vm_resh_ouvass TO sig_edit;
 
 ALTER MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_canasseu
   OWNER TO sig_create;
 GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_canasseu TO sig_create;
-GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_canasseu TO read_sig;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.geo_vm_resh_canasseu TO edit_sig;
+GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_canasseu TO sig_read;
+GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_canasseu TO create_sig;
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE m_reseau_humide.geo_vm_resh_canasseu TO sig_edit;
 
 ALTER MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_ouvasseu
   OWNER TO sig_create;
 GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_ouvasseu TO sig_create;
-GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_ouvasseu TO read_sig;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.geo_vm_resh_ouvasseu TO edit_sig;
+GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_ouvasseu TO sig_read;
+GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_ouvasseu TO create_sig;
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE m_reseau_humide.geo_vm_resh_ouvasseu TO sig_edit;
 
 ALTER MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_canassun
   OWNER TO sig_create;
 GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_canassun TO sig_create;
-GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_canassun TO read_sig;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.geo_vm_resh_canassun TO edit_sig;
+GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_canassun TO sig_read;
+GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_canassun TO create_sig;
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE m_reseau_humide.geo_vm_resh_canassun TO sig_edit;
 
 ALTER MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_ouvassun
   OWNER TO sig_create;
 GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_ouvassun TO sig_create;
-GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_ouvassun TO read_sig;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.geo_vm_resh_ouvassun TO edit_sig;
+GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_ouvassun TO sig_read;
+GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_ouvassun TO create_sig;
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE m_reseau_humide.geo_vm_resh_ouvassun TO sig_edit;
 
 ALTER MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_canassep
   OWNER TO sig_create;
 GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_canassep TO sig_create;
-GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_canassep TO read_sig;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.geo_vm_resh_canassep TO edit_sig;
+GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_canassep TO sig_read;
+GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_canassep TO create_sig;
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE m_reseau_humide.geo_vm_resh_canassep TO sig_edit;
 
 ALTER MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_ouvassep
   OWNER TO sig_create;
 GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_ouvassep TO sig_create;
-GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_ouvassep TO read_sig;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.geo_vm_resh_ouvassep TO edit_sig;
+GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_ouvassep TO sig_read;
+GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_ouvassep TO create_sig;
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE m_reseau_humide.geo_vm_resh_ouvassep TO sig_edit;
 
 ALTER MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_canassnr
   OWNER TO sig_create;
-GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_canassep TO sig_create;
-GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_canassep TO read_sig;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.geo_vm_resh_canassep TO edit_sig;
+GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_canassnr TO sig_create;
+GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_canassnr TO sig_read;
+GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_canassnr TO create_sig;
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE m_reseau_humide.geo_vm_resh_canassnr TO sig_edit;
 
 ALTER MATERIALIZED VIEW m_reseau_humide.geo_vm_resh_ouvassnr
   OWNER TO sig_create;
-GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_ouvassep TO sig_create;
-GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_ouvassep TO read_sig;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE m_reseau_humide.geo_vm_resh_ouvassep TO edit_sig;
+GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_ouvassnr TO sig_create;
+GRANT SELECT ON TABLE m_reseau_humide.geo_vm_resh_ouvassnr TO sig_read;
+GRANT ALL ON TABLE m_reseau_humide.geo_vm_resh_ouvassnr TO create_sig;
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE m_reseau_humide.geo_vm_resh_ouvassnr TO sig_edit;
